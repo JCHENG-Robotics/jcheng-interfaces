@@ -1,9 +1,9 @@
 # 契约审计：`arm_interfaces`、Studio API、gateway 与安全执行路径
 
-> 状态：**M2.1 审计稿，待签字。**
+> 状态：**M2.1 审计已签字（2026-11-23）；v0.1 定义中。**
 > 基线：`jcheng-manipulation v1.0.0`（提交 `b3411e4`，2026-11-23）。
 > 方法：只读源码、配置、测试与证据；不迁移代码，不修改基线。
-> 门禁：本文件批准前，`jcheng-interfaces` 不定义最终 IDL/Schema。
+> 门禁：审计已签字，允许进入 `jcheng_interfaces` v0.1 定义。
 
 ## 1. 审计摘要
 
@@ -500,8 +500,11 @@ OpenAPI `/v1`、WebSocket `/v1`、`jcheng_contracts` Python 包。
 | 角色 | 姓名/账号 | 结论 | 日期 |
 |---|---|---|---|
 | 契约整理 | JCHENG Robotics 工程会话 | 提交审计稿 | 2026-11-23 |
-| 接口评审 | `JerichoCheng` | 待签字 | |
-| 系统/安全评审 | `JerichoCheng` / `JerichoSwaine` | 待签字 | |
-| Owner 批准 | `JerichoCheng` | 待签字 | |
+| 接口评审 | `JerichoCheng` | 签字 | 2026-11-23 |
+| 系统/安全评审 | `JerichoCheng` / `JerichoSwaine` | 签字；`JerichoSwaine` 于 PR #2 批准 | 2026-11-23 |
+| Owner 批准 | `JerichoCheng` | 签字 | 2026-11-23 |
 
-**签字前不创建 `.msg`/`.srv`/`.action` 或最终 Schema。**
+**签字依据：** 审计 PR #2 由 `JerichoSwaine` 批准并合并（`b2cfcf1`，
+2026-11-23T07:44:07Z）；Owner 于 2026-11-23 确认。
+
+审计已签字；允许创建 `.msg`/`.srv`/`.action` 与 v0.1 Schema。

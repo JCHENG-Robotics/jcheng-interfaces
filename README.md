@@ -2,13 +2,13 @@
 
 JCHENG Robotics 的统一接口契约仓库。
 
-> 状态：**M1 骨架，未定版。**
-> 本仓库当前**没有** `.msg` / `.srv` / `.action`、没有 ROS 包、没有最终 Schema。
-> 先完成契约审计，再进入 M2 定义。
+> 状态：**M2 v0.1 定义中；M2.1 审计已签字（2026-11-23）。**
+> `jcheng_interfaces` ROS 包与 v0.1 Schema 正在本分支实现；审计见
+> [`docs/CONTRACT_AUDIT.md`](docs/CONTRACT_AUDIT.md)。
 
 ## 1. 职责
 
-- 一个 ROS 2 包 `jcheng_interfaces`（M2 建立）。
+- 一个 ROS 2 包 `jcheng_interfaces`（v0.1）。
 - JSON Schema、OpenAPI、WebSocket 协议。
 - 纯 Python 契约绑定 `jcheng_contracts`（M2）。
 - 契约哈希 `contract_hash` 与 `interface_manifest.json`。
@@ -29,25 +29,26 @@ JCHENG Robotics 的统一接口契约仓库。
 因此 M1/M2 的门禁是：**先审计，后定版**。
 
 - [契约审计计划](docs/CONTRACT_AUDIT_PLAN.md)
-- [契约审计稿（M2.1，待签字）](docs/CONTRACT_AUDIT.md)
+- [契约审计（M2.1，已签字）](docs/CONTRACT_AUDIT.md)
 - [M1 范围](docs/M1-SCOPE.md)
 - [M2 范围](docs/M2-SCOPE.md)
-- [契约草案原则](docs/CONTRACT.md)
+- [契约原则（v0.1）](docs/CONTRACT.md)
 - [版本策略](docs/VERSIONING.md)
-- [兼容性矩阵模板](docs/COMPATIBILITY.md)
+- [兼容性矩阵](docs/COMPATIBILITY.md)
 
-## 3. 计划目录（M2 填充）
+## 3. v0.1 目录
 
 ```text
-ros2_ws/src/jcheng_interfaces/    # msg/srv/action（M2）
-schemas/                          # JSON Schema / OpenAPI / WS（M2）
-python/jcheng_contracts/          # Python 绑定（M2）
-typescript/                       # 生成的 TS 类型（M2）
-tests/                            # 契约/兼容性测试（M2）
-tools/                            # manifest/兼容性工具（M2）
+ros2_ws/src/jcheng_interfaces/    # 14 msg / 10 srv / 1 action
+schemas/                          # JSON Schema / OpenAPI / WS / error codes
+python/jcheng_contracts/          # Python 绑定与 manifest 工具
+tests/                            # 契约/兼容性/parity 测试
+tools/                            # manifest / schema / 硬件原语检查
+interface_manifest.json           # 逐文件哈希 + 契约哈希
 ```
 
-M1 只保留目录占位与文档。
+v0.1 已构建并通过 15 项本地契约测试；契约哈希由
+`interface_manifest.json` 固定。TypeScript 绑定尚未生成（后续 M2.3 补充）。
 
 ## 4. 约束
 

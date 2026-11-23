@@ -1,6 +1,9 @@
-# 契约草案原则（非最终）
+# 契约原则（v0.1）
 
-> 本文件只记录原则；字段与消息在契约审计签字后才定义。
+> v0.1 已定义：字段以 `ros2_ws/src/jcheng_interfaces/` 与 `schemas/` 为准。
+> 本文件只记录不可协商的原则；审计与兼容性见
+> [`CONTRACT_AUDIT.md`](CONTRACT_AUDIT.md) 与
+> [`COMPATIBILITY.md`](COMPATIBILITY.md)。
 
 ## 1. 分层
 
@@ -10,7 +13,7 @@
 | HTTP/OpenAPI | `schemas/openapi/` | URL `/v1` |
 | WebSocket | `schemas/ws/` | 协议版本字段 |
 | Python | `jcheng_contracts` | 跟随契约 |
-| TypeScript | 生成 | 跟随 OpenAPI |
+| TypeScript | 生成 | 跟随 OpenAPI（M2.3） |
 | 配置/证据 | JSON Schema | Schema 版本 |
 
 ## 2. 规则
@@ -26,11 +29,14 @@
 9. 审计可重建；结果带 `evidence_id`。
 10. 控制决策用本机单调时钟；跨主机时间戳只作记录。
 
-## 3. 待审计后决定
+## 3. 审计已决定
 
-- `ValidateTrajectory` 是否保留 JSON 报告字段。
-- `ArmMove` 的弃用方式。
-- 遥操作流契约是否在 v0.1 定义、试点时启用。
-- 夹爪弧度符号（契约正向 vs URDF `r_joint` 负向）。
-- 底盘 duty 归一化与厂商原始 duty 的换算位置。
-- Studio 现有 `/api/*` 的兼容层边界。
+- `ArmMove` 立即弃用；如需要单步运动，用 `JOINT_STEP`（rad）。
+- `ValidateTrajectory` 语义保留到 `ValidateMotion`，但删除调用方起点覆盖；
+  `ValidationReport` 结构化，`report_json` 只作为可选诊断。
+- 遥操作流 `TeleopCommand` 在 v0.1 预留，试点时启用。
+- 夹爪契约正向 0–2.22 rad；URDF `r_joint` 负号由适配器转换。
+- 底盘 duty 归一化 -1..1；厂商原始 duty 由适配器映射。
+- HTTP 使用干净 `/v1`；旧 `/api/*` 由适配层处理。
+- 操作者字段命名为 `operator_id`，避免 C++ 保留字 `operator`。
+- 错误码以新注册表为准，旧码保留映射。

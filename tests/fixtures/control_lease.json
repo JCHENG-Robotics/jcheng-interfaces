@@ -1,0 +1,16 @@
+{
+  "lease_id": "lease-1",
+  "holder": "operator-1",
+  "scope": "arm",
+  "mode": "exclusive",
+  "priority": 100,
+  "deadman_required": false,
+  "issued_at": "2026-11-23T00:00:00Z",
+  "expires_at": "2026-11-23T00:01:00Z",
+  "contract": {
+    "major": 0,
+    "minor": 1,
+    "patch": 0,
+    "contract_hash": "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+  }
+}

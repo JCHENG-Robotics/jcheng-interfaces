@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "evidence_id": "ev-1",
+  "kind": "motion",
+  "created_at": "2026-11-23T00:00:00Z",
+  "operator": "operator-1",
+  "git": {
+    "repo": "jcheng-interfaces",
+    "commit": "0000000000000000000000000000000000000000",
+    "tag": "v0.1.0"
+  },
+  "contract_hash": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+  "profile_hash": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+  "environment": {
+    "host": "workstation",
+    "ros_distro": "humble",
+    "domains": [
+      41,
+      42
+    ]
+  },
+  "request": {},
+  "validation": {},
+  "observations": [
+    {}
+  ],
+  "artifacts": [],
+  "result": "pass",
+  "limitations": []
+}

@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "approved": true,
+  "reason_code": "OK",
+  "check_ids": [
+    "joint_limit"
+  ],
+  "violations": [],
+  "duration_s": 1.0,
+  "point_count": 1,
+  "workspace_checked": true,
+  "table_checked": true,
+  "max_velocity_rad_s": 0.5,
+  "max_acceleration_rad_s2": 0.5,
+  "checked_at": "2026-11-23T00:00:00Z"
+}

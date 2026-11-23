@@ -1,0 +1,5 @@
+string operator_id
+string reason
+---
+bool disarmed
+SafetyState safety

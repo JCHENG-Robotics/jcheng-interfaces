@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://jcheng-robotics.github.io/schemas/ws/jcheng-ws.v1.json",
+  "title": "JCHENG WebSocket v1 envelope",
+  "description": "State, safety, lease, motion and event pushes. The payload shapes reference the v0.1 message schemas.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["v", "type", "id", "ts", "payload"],
+  "properties": {
+    "v": {"const": 1},
+    "type": {"enum": ["hello", "state", "safety", "lease", "motion", "event", "ping", "pong"]},
+    "id": {"type": "string", "minLength": 1},
+    "ts": {"type": "string", "format": "date-time"},
+    "payload": {
+      "anyOf": [
+        {"$ref": "../messages.v1.schema.json#/$defs/RobotState"},
+        {"$ref": "../messages.v1.schema.json#/$defs/SafetyState"},
+        {"$ref": "../messages.v1.schema.json#/$defs/ControlLease"},
+        {"$ref": "../messages.v1.schema.json#/$defs/MotionResult"},
+        {"type": "object"}
+      ]
+    }
+  }
+}

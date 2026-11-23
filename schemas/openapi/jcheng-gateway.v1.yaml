@@ -1,0 +1,559 @@
+openapi: 3.1.0
+info:
+  title: JCHENG Gateway API
+  version: 1.0.0
+  description: |
+    External gateway contract for JCHENG Robotics. Motion is expressed as intents;
+    there is no endpoint for raw servo registers, arbitrary motor duty or EEPROM writes.
+    The authoritative contract identity is carried by ContractVersion.contract_hash.
+  x-contract-version: "0.1.0"
+  x-canonical-language: en
+servers:
+  - url: http://127.0.0.1:8766
+    description: Local supervised gateway
+security:
+  - bearerAuth: []
+tags:
+  - name: health
+  - name: contract
+  - name: state
+  - name: safety
+  - name: leases
+  - name: motion
+  - name: capabilities
+  - name: events
+paths:
+  /v1/health:
+    get:
+      operationId: getHealth
+      tags: [health]
+      security: []
+      responses:
+        "200":
+          description: Liveness and capability summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Health"
+        "503":
+          $ref: "#/components/responses/Unavailable"
+  /v1/contract:
+    get:
+      operationId: getContract
+      tags: [contract]
+      responses:
+        "200":
+          description: Deployed contract identity
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ContractInfo"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /v1/state:
+    get:
+      operationId: getState
+      tags: [state]
+      responses:
+        "200":
+          description: Latest robot state
+          content:
+            application/json:
+              schema:
+                $ref: "../messages.v1.schema.json#/$defs/RobotState"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /v1/safety:
+    get:
+      operationId: getSafety
+      tags: [safety]
+      responses:
+        "200":
+          description: Current safety state
+          content:
+            application/json:
+              schema:
+                $ref: "../messages.v1.schema.json#/$defs/SafetyState"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /v1/safety/arm:
+    post:
+      operationId: armSystem
+      tags: [safety]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ArmRequest"
+      responses:
+        "200":
+          description: Arm result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ArmResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "409":
+          $ref: "#/components/responses/Conflict"
+  /v1/safety/disarm:
+    post:
+      operationId: disarmSystem
+      tags: [safety]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DisarmRequest"
+      responses:
+        "200":
+          description: Disarm result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DisarmResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+  /v1/safety/reset:
+    post:
+      operationId: resetSafety
+      tags: [safety]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ResetRequest"
+      responses:
+        "200":
+          description: Reset result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResetResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "409":
+          $ref: "#/components/responses/Conflict"
+  /v1/leases:
+    post:
+      operationId: acquireLease
+      tags: [leases]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AcquireLeaseRequest"
+      responses:
+        "200":
+          description: Lease granted
+          content:
+            application/json:
+              schema:
+                $ref: "../messages.v1.schema.json#/$defs/ControlLease"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "409":
+          $ref: "#/components/responses/Conflict"
+  /v1/leases/{lease_id}:
+    delete:
+      operationId: releaseLease
+      tags: [leases]
+      parameters:
+        - $ref: "#/components/parameters/LeaseId"
+      responses:
+        "200":
+          description: Lease released
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReleaseResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /v1/leases/{lease_id}/renew:
+    post:
+      operationId: renewLease
+      tags: [leases]
+      parameters:
+        - $ref: "#/components/parameters/LeaseId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RenewLeaseRequest"
+      responses:
+        "200":
+          description: Lease renewed
+          content:
+            application/json:
+              schema:
+                $ref: "../messages.v1.schema.json#/$defs/ControlLease"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "409":
+          $ref: "#/components/responses/Conflict"
+  /v1/leases/{lease_id}/revoke:
+    post:
+      operationId: revokeLease
+      tags: [leases]
+      parameters:
+        - $ref: "#/components/parameters/LeaseId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RevokeRequest"
+      responses:
+        "200":
+          description: Lease revoked
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RevokeResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "409":
+          $ref: "#/components/responses/Conflict"
+  /v1/motion/validate:
+    post:
+      operationId: validateMotion
+      tags: [motion]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "../messages.v1.schema.json#/$defs/MotionCommand"
+      responses:
+        "200":
+          description: Validation result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "422":
+          $ref: "#/components/responses/Invalid"
+  /v1/motion/execute:
+    post:
+      operationId: executeMotion
+      tags: [motion]
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "../messages.v1.schema.json#/$defs/MotionCommand"
+      responses:
+        "200":
+          description: Terminal motion result
+          content:
+            application/json:
+              schema:
+                $ref: "../messages.v1.schema.json#/$defs/MotionResult"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "422":
+          $ref: "#/components/responses/Invalid"
+        "503":
+          $ref: "#/components/responses/Unavailable"
+  /v1/motion/stop:
+    post:
+      operationId: stopMotion
+      tags: [motion]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StopRequest"
+      responses:
+        "200":
+          description: Stop request result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StopResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+  /v1/capabilities:
+    get:
+      operationId: getCapabilities
+      tags: [capabilities]
+      responses:
+        "200":
+          description: Registered capability manifests
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CapabilitiesResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /v1/events:
+    get:
+      operationId: listEvents
+      tags: [events]
+      parameters:
+        - name: after
+          in: query
+          schema: {type: integer, minimum: 0}
+        - name: limit
+          in: query
+          schema: {type: integer, minimum: 1, maximum: 500, default: 100}
+      responses:
+        "200":
+          description: Append-only event page
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EventPage"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+  parameters:
+    LeaseId:
+      name: lease_id
+      in: path
+      required: true
+      schema: {type: string}
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      schema: {type: string, minLength: 1}
+  responses:
+    Unauthorized:
+      description: Authentication is missing or invalid
+      content:
+        application/json:
+          schema: {$ref: "#/components/schemas/Error"}
+    Forbidden:
+      description: Caller lacks role or scope
+      content:
+        application/json:
+          schema: {$ref: "#/components/schemas/Error"}
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema: {$ref: "#/components/schemas/Error"}
+    Conflict:
+      description: Request conflicts with current state
+      content:
+        application/json:
+          schema: {$ref: "#/components/schemas/Error"}
+    Invalid:
+      description: Payload validation failed
+      content:
+        application/json:
+          schema: {$ref: "#/components/schemas/Error"}
+    Unavailable:
+      description: Hardware or dependency unavailable
+      content:
+        application/json:
+          schema: {$ref: "#/components/schemas/Error"}
+  schemas:
+    Error:
+      type: object
+      additionalProperties: false
+      required: [error]
+      properties:
+        error:
+          type: object
+          additionalProperties: false
+          required: [code, message]
+          properties:
+            code: {type: string}
+            message: {type: string}
+            details: {type: object}
+            request_id: {type: string}
+    ContractInfo:
+      type: object
+      additionalProperties: false
+      required: [contract, profile_hash, system_version]
+      properties:
+        contract: {$ref: "../messages.v1.schema.json#/$defs/ContractVersion"}
+        profile_hash: {type: string}
+        system_version: {type: string}
+    Health:
+      type: object
+      additionalProperties: false
+      required: [status, contract, safety]
+      properties:
+        status: {enum: [ok, degraded, fault]}
+        contract: {$ref: "../messages.v1.schema.json#/$defs/ContractVersion"}
+        safety: {$ref: "../messages.v1.schema.json#/$defs/SafetyState"}
+        capabilities: {type: array, items: {type: string}}
+    ArmRequest:
+      type: object
+      additionalProperties: false
+      required: [operator_id, checklist_hash, confirm_phrase, contract, profile_hash]
+      properties:
+        operator_id: {type: string}
+        checklist_hash: {type: string}
+        confirm_phrase: {type: string}
+        contract: {$ref: "../messages.v1.schema.json#/$defs/ContractVersion"}
+        profile_hash: {type: string}
+    ArmResponse:
+      type: object
+      additionalProperties: false
+      required: [armed, safety]
+      properties:
+        armed: {type: boolean}
+        safety: {$ref: "../messages.v1.schema.json#/$defs/SafetyState"}
+        message: {type: string}
+    DisarmRequest:
+      type: object
+      additionalProperties: false
+      required: [operator_id, reason]
+      properties:
+        operator_id: {type: string}
+        reason: {type: string}
+    DisarmResponse:
+      type: object
+      additionalProperties: false
+      required: [disarmed, safety]
+      properties:
+        disarmed: {type: boolean}
+        safety: {$ref: "../messages.v1.schema.json#/$defs/SafetyState"}
+    ResetRequest:
+      type: object
+      additionalProperties: false
+      required: [operator_id, reason, confirm_phrase, contract]
+      properties:
+        operator_id: {type: string}
+        reason: {type: string}
+        confirm_phrase: {type: string}
+        contract: {$ref: "../messages.v1.schema.json#/$defs/ContractVersion"}
+    ResetResponse:
+      type: object
+      additionalProperties: false
+      required: [accepted, safety]
+      properties:
+        accepted: {type: boolean}
+        safety: {$ref: "../messages.v1.schema.json#/$defs/SafetyState"}
+        message: {type: string}
+    AcquireLeaseRequest:
+      type: object
+      additionalProperties: false
+      required: [holder, scope, mode, priority, ttl_ms, deadman_required, contract]
+      properties:
+        holder: {type: string}
+        scope: {enum: [arm, gripper, base, full]}
+        mode: {const: exclusive}
+        priority: {type: integer, minimum: 0, maximum: 255}
+        ttl_ms: {type: integer, minimum: 100, maximum: 3600000}
+        deadman_required: {type: boolean}
+        contract: {$ref: "../messages.v1.schema.json#/$defs/ContractVersion"}
+    RenewLeaseRequest:
+      type: object
+      additionalProperties: false
+      required: [ttl_ms, contract]
+      properties:
+        ttl_ms: {type: integer, minimum: 100, maximum: 3600000}
+        contract: {$ref: "../messages.v1.schema.json#/$defs/ContractVersion"}
+    ReleaseResponse:
+      type: object
+      additionalProperties: false
+      required: [released]
+      properties:
+        released: {type: boolean}
+        message: {type: string}
+    RevokeRequest:
+      type: object
+      additionalProperties: false
+      required: [operator_id, reason, contract]
+      properties:
+        operator_id: {type: string}
+        reason: {type: string}
+        contract: {$ref: "../messages.v1.schema.json#/$defs/ContractVersion"}
+    RevokeResponse:
+      type: object
+      additionalProperties: false
+      required: [revoked]
+      properties:
+        revoked: {type: boolean}
+        message: {type: string}
+    ValidationResponse:
+      type: object
+      additionalProperties: false
+      required: [approved, reason_code, violations, report, validation_id, expires_at]
+      properties:
+        approved: {type: boolean}
+        reason_code: {type: string}
+        violations: {type: array, items: {type: string}}
+        report: {$ref: "../messages.v1.schema.json#/$defs/ValidationReport"}
+        validation_id: {type: string}
+        expires_at: {type: string, format: date-time}
+    StopRequest:
+      type: object
+      additionalProperties: false
+      required: [operator_id, reason]
+      properties:
+        operator_id: {type: string}
+        reason: {type: string}
+        lease_id: {type: string}
+        command_id: {type: string}
+    StopResponse:
+      type: object
+      additionalProperties: false
+      required: [accepted, safety]
+      properties:
+        accepted: {type: boolean}
+        safety: {$ref: "../messages.v1.schema.json#/$defs/SafetyState"}
+        message: {type: string}
+    CapabilitiesResponse:
+      type: object
+      additionalProperties: false
+      required: [capabilities, supported_contracts]
+      properties:
+        capabilities:
+          type: array
+          items: {$ref: "../messages.v1.schema.json#/$defs/CapabilityManifest"}
+        supported_contracts:
+          type: array
+          items: {$ref: "../messages.v1.schema.json#/$defs/ContractVersion"}
+    EventPage:
+      type: object
+      additionalProperties: false
+      required: [items, last_seq, schema_version]
+      properties:
+        items: {type: array, items: {type: object}}
+        last_seq: {type: integer, minimum: 0}
+        schema_version: {type: integer}

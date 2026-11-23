@@ -1,6 +1,6 @@
 # 契约审计计划（M2 门禁）
 
-> **执行结果：** [`CONTRACT_AUDIT.md`](CONTRACT_AUDIT.md)（M2.1 审计稿，待签字）。
+> **执行结果：** [`CONTRACT_AUDIT.md`](CONTRACT_AUDIT.md)（M2.1 审计已签字，2026-11-23）。
 >
 > 要求来源：用户附加约束 6。
 > 目标：在 `jcheng-interfaces` 正式定版前，审计现有 `arm_interfaces`、

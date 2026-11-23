@@ -1,4 +1,4 @@
-name: m1-skeleton
+name: contract-ci
 
 on:
   push:
@@ -16,6 +16,60 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
-      - name: M1 scope gate
+      - name: Repository gate
         shell: bash
-        run: bash scripts/check_m1_gate.sh
+        run: bash scripts/check_repo_gate.sh
+
+  m2-contract:
+    name: m2-contract
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    container:
+      image: ros:humble-ros-base@sha256:dfc94c85d8e01f230951b2a85ca5576e08473081c3da5fbbe8f3ab844703b9ba
+    env:
+      DEBIAN_FRONTEND: noninteractive
+      PYTHONUNBUFFERED: "1"
+    steps:
+      - name: Install git for checkout
+        shell: bash
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends git ca-certificates
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Install build and test dependencies
+        shell: bash
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends \
+            python3-colcon-common-extensions \
+            python3-jsonschema \
+            python3-pytest \
+            python3-setuptools \
+            python3-yaml \
+            ros-humble-ament-cmake \
+            ros-humble-ament-lint-auto \
+            ros-humble-ament-lint-common \
+            ros-humble-builtin-interfaces \
+            ros-humble-geometry-msgs \
+            ros-humble-rosidl-default-generators \
+            ros-humble-rosidl-default-runtime \
+            ros-humble-std-msgs
+      - name: Build jcheng_interfaces
+        shell: bash
+        run: |
+          source /opt/ros/humble/setup.bash
+          colcon build \
+            --base-paths ros2_ws/src \
+            --packages-select jcheng_interfaces \
+            --event-handlers console_cohesion+
+      - name: Contract checks
+        shell: bash
+        run: |
+          source /opt/ros/humble/setup.bash
+          source install/setup.bash
+          python3 tools/generate_manifest.py --check
+          python3 tools/check_schemas.py
+          python3 tools/check_no_hardware.py
+          python3 -m pytest -q
+          ros2 interface show jcheng_interfaces/msg/MotionCommand >/dev/null
