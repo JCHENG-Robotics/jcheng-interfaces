@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://jcheng-robotics.github.io/schemas/capability-manifest.v1.schema.json",
+  "title": "Capability module manifest",
+  "description": "Repository-side capability.yaml. The runtime CapabilityManifest.msg is derived from this file; hardware_access is 'none' here and false on the wire.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "name", "version", "contract", "safety", "hardware_access", "runtime"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "name": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$"},
+    "version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+"},
+    "contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["interfaces", "contract_hash", "system_api"],
+      "properties": {
+        "interfaces": {"type": "string"},
+        "contract_hash": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+        "system_api": {"type": "string"}
+      }
+    },
+    "safety": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["class", "scopes", "requires_lease", "max_rate_hz", "deadman_ms"],
+      "properties": {
+        "class": {"enum": ["motion_source", "observer", "offline"]},
+        "scopes": {"type": "array", "items": {"enum": ["arm", "gripper", "base", "full"]}},
+        "requires_lease": {"const": true},
+        "max_rate_hz": {"type": "integer", "minimum": 1},
+        "deadman_ms": {"type": "integer", "minimum": 1, "maximum": 500}
+      }
+    },
+    "hardware_access": {"const": "none"},
+    "runtime": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ros_domains", "publishes", "subscribes"],
+      "properties": {
+        "ros_domains": {"type": "array", "items": {"const": 42}},
+        "publishes": {"type": "array", "items": {"type": "string"}},
+        "subscribes": {"type": "array", "items": {"type": "string"}},
+        "services": {"type": "array", "items": {"type": "string"}}
+      }
+    }
+  }
+}

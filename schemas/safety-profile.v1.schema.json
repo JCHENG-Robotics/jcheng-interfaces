@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://jcheng-robotics.github.io/schemas/safety-profile.v1.schema.json",
+  "title": "Safety profile",
+  "description": "Runtime safety configuration derived from the robot profile. Limits are SI units; the table plane is in the workspace frame.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "profiles", "joint_limits", "state", "start_state", "trajectory", "workspace", "table_plane"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "profiles": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["moveit", "step", "pose", "fast"],
+      "properties": {
+        "moveit": {"type": "object", "additionalProperties": false, "required": ["max_velocity_rad_s", "max_acceleration_rad_s2"], "properties": {"max_velocity_rad_s": {"type": "number", "exclusiveMinimum": 0}, "max_acceleration_rad_s2": {"type": "number", "exclusiveMinimum": 0}}},
+        "step": {"type": "object", "additionalProperties": false, "required": ["max_step_rad", "min_duration_s", "max_duration_s"], "properties": {"max_step_rad": {"type": "number", "exclusiveMinimum": 0}, "min_duration_s": {"type": "number", "exclusiveMinimum": 0}, "max_duration_s": {"type": "number", "exclusiveMinimum": 0}}},
+        "pose": {"type": "object", "additionalProperties": false, "required": ["max_velocity_rad_s"], "properties": {"max_velocity_rad_s": {"type": "number", "exclusiveMinimum": 0}}},
+        "fast": {"type": "object", "additionalProperties": false, "required": ["max_velocity_rad_s", "max_acceleration_rad_s2", "requires_bus_verification"], "properties": {"max_velocity_rad_s": {"type": "number", "exclusiveMinimum": 0}, "max_acceleration_rad_s2": {"type": "number", "exclusiveMinimum": 0}, "requires_bus_verification": {"const": true}}}
+      }
+    },
+    "joint_limits": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["lower", "upper", "max_velocity", "max_acceleration"],
+        "properties": {
+          "lower": {"type": "number"},
+          "upper": {"type": "number"},
+          "max_velocity": {"type": "number", "exclusiveMinimum": 0},
+          "max_acceleration": {"type": "number", "exclusiveMinimum": 0}
+        }
+      }
+    },
+    "state": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["timeout_s"],
+      "properties": {"timeout_s": {"type": "number", "exclusiveMinimum": 0}}
+    },
+    "start_state": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["max_distance_rad"],
+      "properties": {"max_distance_rad": {"type": "number", "exclusiveMinimum": 0}}
+    },
+    "trajectory": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["max_duration_s", "max_points", "position_tolerance_rad", "velocity_tolerance_rad_s", "acceleration_tolerance_rad_s2"],
+      "properties": {
+        "max_duration_s": {"type": "number", "exclusiveMinimum": 0},
+        "max_points": {"type": "integer", "minimum": 1},
+        "position_tolerance_rad": {"type": "number", "exclusiveMinimum": 0},
+        "velocity_tolerance_rad_s": {"type": "number", "exclusiveMinimum": 0},
+        "acceleration_tolerance_rad_s2": {"type": "number", "exclusiveMinimum": 0}
+      }
+    },
+    "workspace": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["frame", "enabled", "required", "lower", "upper"],
+      "properties": {
+        "frame": {"type": "string"},
+        "enabled": {"type": "boolean"},
+        "required": {"type": "boolean"},
+        "lower": {"type": "array", "minItems": 3, "maxItems": 3, "items": {"type": "number"}},
+        "upper": {"type": "array", "minItems": 3, "maxItems": 3, "items": {"type": "number"}}
+      }
+    },
+    "table_plane": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["enabled", "frame", "normal", "offset", "clearance_m"],
+      "properties": {
+        "enabled": {"type": "boolean"},
+        "frame": {"type": "string"},
+        "normal": {"type": "array", "minItems": 3, "maxItems": 3, "items": {"type": "number"}},
+        "offset": {"type": "number"},
+        "clearance_m": {"type": "number", "minimum": 0}
+      }
+    }
+  }
+}

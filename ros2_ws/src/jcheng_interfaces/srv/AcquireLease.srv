@@ -1,0 +1,12 @@
+string holder
+string scope
+string mode
+uint8 priority
+uint32 ttl_ms
+bool deadman_required
+ContractVersion contract
+---
+bool granted
+ControlLease lease
+string reason_code
+string message

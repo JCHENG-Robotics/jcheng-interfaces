@@ -1,0 +1,121 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://jcheng-robotics.github.io/schemas/robot-profile.v1.schema.json",
+  "title": "Robot profile",
+  "description": "Single source of truth for joint limits, servo mapping, workspace, table plane and named motion profiles. Derived safety, MoveIt and gateway configs must be generated from this file.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "robot", "profile_version", "joints", "gripper", "workspace", "table_plane", "profiles", "source_hashes"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "robot": {"type": "string"},
+    "profile_version": {"type": "string"},
+    "baseline_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "repo": {"type": "string"},
+        "tag": {"type": "string"},
+        "commit": {"type": "string"}
+      }
+    },
+    "joints": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "servo_id", "lower_rad", "upper_rad", "max_velocity_rad_s", "max_acceleration_rad_s2"],
+        "properties": {
+          "name": {"type": "string"},
+          "servo_id": {"type": "integer", "minimum": 1},
+          "lower_rad": {"type": "number"},
+          "upper_rad": {"type": "number"},
+          "max_velocity_rad_s": {"type": "number", "exclusiveMinimum": 0},
+          "max_acceleration_rad_s2": {"type": "number", "exclusiveMinimum": 0},
+          "direction": {"enum": [-1, 1]}
+        }
+      }
+    },
+    "gripper": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["servo_id", "open_rad", "closed_rad", "measured_open_pulses", "measured_closed_pulses", "max_velocity_rad_s"],
+      "properties": {
+        "servo_id": {"type": "integer", "minimum": 1},
+        "open_rad": {"type": "number"},
+        "closed_rad": {"type": "number"},
+        "measured_open_pulses": {"type": "array", "items": {"type": "integer"}},
+        "measured_closed_pulses": {"type": "array", "items": {"type": "integer"}},
+        "max_velocity_rad_s": {"type": "number", "exclusiveMinimum": 0}
+      }
+    },
+    "workspace": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["frame", "tip_link", "lower", "upper"],
+      "properties": {
+        "frame": {"type": "string"},
+        "tip_link": {"type": "string"},
+        "lower": {"type": "array", "minItems": 3, "maxItems": 3, "items": {"type": "number"}},
+        "upper": {"type": "array", "minItems": 3, "maxItems": 3, "items": {"type": "number"}}
+      }
+    },
+    "table_plane": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["normal", "offset", "clearance_m"],
+      "properties": {
+        "normal": {"type": "array", "minItems": 3, "maxItems": 3, "items": {"type": "number"}},
+        "offset": {"type": "number"},
+        "clearance_m": {"type": "number", "minimum": 0}
+      }
+    },
+    "profiles": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["moveit", "step", "pose", "fast", "base"],
+      "properties": {
+        "moveit": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["max_velocity_rad_s", "max_acceleration_rad_s2"],
+          "properties": {"max_velocity_rad_s": {"type": "number", "exclusiveMinimum": 0}, "max_acceleration_rad_s2": {"type": "number", "exclusiveMinimum": 0}}
+        },
+        "step": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["max_step_rad", "min_duration_s", "max_duration_s"],
+          "properties": {"max_step_rad": {"type": "number", "exclusiveMinimum": 0}, "min_duration_s": {"type": "number", "exclusiveMinimum": 0}, "max_duration_s": {"type": "number", "exclusiveMinimum": 0}}
+        },
+        "pose": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["max_velocity_rad_s"],
+          "properties": {"max_velocity_rad_s": {"type": "number", "exclusiveMinimum": 0}}
+        },
+        "fast": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["max_velocity_rad_s", "max_acceleration_rad_s2", "requires_bus_verification"],
+          "properties": {"max_velocity_rad_s": {"type": "number", "exclusiveMinimum": 0}, "max_acceleration_rad_s2": {"type": "number", "exclusiveMinimum": 0}, "requires_bus_verification": {"const": true}}
+        },
+        "base": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["max_abs_duty_normalized", "vendor_duty_scale", "max_duration_s"],
+          "properties": {"max_abs_duty_normalized": {"type": "number", "minimum": 0, "maximum": 1}, "vendor_duty_scale": {"type": "number", "exclusiveMinimum": 0}, "max_duration_s": {"type": "number", "exclusiveMinimum": 0}}
+        },
+        "gripper": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {"min_rad": {"type": "number"}, "max_rad": {"type": "number"}, "max_velocity_rad_s": {"type": "number", "exclusiveMinimum": 0}, "verify_bus": {"type": "boolean"}}
+        }
+      }
+    },
+    "source_hashes": {
+      "type": "object",
+      "additionalProperties": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"}
+    }
+  }
+}

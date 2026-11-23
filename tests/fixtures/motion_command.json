@@ -1,0 +1,26 @@
+{
+  "intent_id": "intent-1",
+  "idempotency_key": "idem-1",
+  "lease_id": "lease-1",
+  "source": "jcheng-teleop",
+  "kind": "JOINT_STEP",
+  "profile": "step",
+  "contract": {
+    "major": 0,
+    "minor": 1,
+    "patch": 0,
+    "contract_hash": "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "joint_names": [
+    "joint1"
+  ],
+  "target_positions": [
+    0.1
+  ],
+  "max_velocity_rad_s": 0.5,
+  "max_acceleration_rad_s2": 0.5,
+  "duration_s": 1.0,
+  "verify_bus": true,
+  "require_measured_state": true,
+  "expected_profile_hash": "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+}

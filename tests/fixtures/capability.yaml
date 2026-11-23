@@ -1,0 +1,24 @@
+schema_version: 1
+name: jcheng-teleop
+version: 0.1.0
+contract:
+  interfaces: '>=0.1,<0.2'
+  contract_hash: sha256:0000000000000000000000000000000000000000000000000000000000000000
+  system_api: '>=0.1,<0.2'
+safety:
+  class: motion_source
+  scopes:
+  - arm
+  - gripper
+  requires_lease: true
+  max_rate_hz: 50
+  deadman_ms: 300
+hardware_access: none
+runtime:
+  ros_domains:
+  - 42
+  publishes:
+  - /jcheng/intent/teleop
+  subscribes:
+  - /jcheng/state
+  - /jcheng/safety/state

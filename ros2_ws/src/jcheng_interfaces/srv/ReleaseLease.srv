@@ -1,0 +1,5 @@
+string lease_id
+---
+bool released
+string reason_code
+string message

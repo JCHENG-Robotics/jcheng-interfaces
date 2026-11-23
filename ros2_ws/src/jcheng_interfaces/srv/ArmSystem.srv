@@ -1,0 +1,9 @@
+string operator_id
+string checklist_hash
+string confirm_phrase
+ContractVersion contract
+string profile_hash
+---
+bool armed
+SafetyState safety
+string message

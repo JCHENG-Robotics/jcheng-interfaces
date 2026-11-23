@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://jcheng-robotics.github.io/schemas/lockfile.v1.schema.json",
+  "title": "Ecosystem lockfile",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "release", "channel", "created_at", "toolchain", "repos", "modules", "robot", "verification"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "release": {"type": "string"},
+    "channel": {"enum": ["dev", "rc", "stable"]},
+    "created_at": {"type": "string", "format": "date-time"},
+    "toolchain": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ros_distro", "ros_image", "python", "os"],
+      "properties": {
+        "ros_distro": {"type": "string"},
+        "ros_image": {"type": "string"},
+        "python": {"type": "string"},
+        "os": {"type": "string"},
+        "colcon": {"type": "string"}
+      }
+    },
+    "repos": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["url", "version", "tag", "commit"],
+        "properties": {
+          "url": {"type": "string"},
+          "version": {"type": "string"},
+          "tag": {"type": "string"},
+          "commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+          "contract_hash": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"}
+        }
+      }
+    },
+    "modules": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["version", "commit", "interfaces"],
+        "properties": {
+          "version": {"type": "string"},
+          "commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+          "interfaces": {"type": "string"}
+        }
+      }
+    },
+    "robot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "profile_version", "profile_sha256"],
+      "properties": {
+        "name": {"type": "string"},
+        "profile_version": {"type": "string"},
+        "profile_sha256": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+        "vendor_manifest_sha256": {"type": "string"}
+      }
+    },
+    "verification": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ci_run": {"type": "string"},
+        "e2e_report": {"type": "string"},
+        "hardware_evidence": {"type": "string"}
+      }
+    }
+  }
+}

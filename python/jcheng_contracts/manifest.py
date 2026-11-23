@@ -1,0 +1,149 @@
+"""Deterministic contract manifest and hash.
+
+The contract hash covers the normalized IDL and schemas. It is the value carried
+in ``ContractVersion.contract_hash`` and checked at runtime.
+"""
+
+from __future__ import annotations
+
+import hashlib
+import json
+from pathlib import Path
+from typing import Any, Iterable
+
+IDL_SUFFIXES = (".msg", ".srv", ".action")
+SCHEMA_SUFFIXES = (".json", ".yaml", ".yml")
+MANIFEST_NAME = "interface_manifest.json"
+
+
+def contract_files(root: str | Path) -> list[Path]:
+    """Return every IDL and schema file covered by the contract hash."""
+    root = Path(root)
+    files: list[Path] = []
+    for base, suffixes in (
+        (root / "ros2_ws" / "src" / "jcheng_interfaces", IDL_SUFFIXES),
+        (root / "schemas", SCHEMA_SUFFIXES),
+    ):
+        if not base.exists():
+            continue
+        for path in base.rglob("*"):
+            if path.is_file() and path.suffix in suffixes:
+                files.append(path)
+    return sorted(set(files))
+
+
+def _relative(root: Path, path: Path) -> str:
+    return path.relative_to(root).as_posix()
+
+
+def _normalise_idl(text: str) -> str:
+    lines: list[str] = []
+    for raw in text.splitlines():
+        line = raw.split("#", 1)[0].rstrip()
+        if line.strip():
+            lines.append(line)
+    return "\n".join(lines) + "\n"
+
+
+def _normalise_json(text: str) -> str:
+    value = json.loads(text)
+    return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+
+
+def _normalise_yaml(text: str) -> str:
+    try:
+        import yaml  # type: ignore
+    except ImportError:  # pragma: no cover - CI installs PyYAML
+        return "\n".join(line.rstrip() for line in text.splitlines() if line.strip()) + "\n"
+    value = yaml.safe_load(text)
+    return yaml.safe_dump(
+        value,
+        sort_keys=True,
+        allow_unicode=True,
+        default_flow_style=False,
+    )
+
+
+def normalise(path: str | Path, text: str) -> str:
+    """Normalize one file for the contract hash."""
+    path = Path(path)
+    if path.suffix in IDL_SUFFIXES:
+        return _normalise_idl(text)
+    if path.suffix == ".json":
+        return _normalise_json(text)
+    if path.suffix in (".yaml", ".yml"):
+        return _normalise_yaml(text)
+    return "\n".join(line.rstrip() for line in text.splitlines() if line.strip()) + "\n"
+
+
+def file_sha256(path: str | Path) -> str:
+    """SHA-256 of the raw file bytes."""
+    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+
+
+def contract_hash(root: str | Path) -> str:
+    """SHA-256 over sorted (relative path, normalized content) pairs."""
+    root = Path(root)
+    digest = hashlib.sha256()
+    for path in contract_files(root):
+        rel = _relative(root, path)
+        digest.update(rel.encode("utf-8"))
+        digest.update(b"\0")
+        digest.update(normalise(path, path.read_text(encoding="utf-8")).encode("utf-8"))
+        digest.update(b"\0")
+    return "sha256:" + digest.hexdigest()
+
+
+def build_manifest(root: str | Path) -> dict[str, Any]:
+    """Build the manifest dict from the repository."""
+    root = Path(root)
+    files = {
+        _relative(root, path): file_sha256(path)
+        for path in contract_files(root)
+    }
+    version = (root / "VERSION").read_text(encoding="utf-8").strip()
+    return {
+        "schema_version": 1,
+        "package": "jcheng_interfaces",
+        "version": version,
+        "contract_hash": contract_hash(root),
+        "files": files,
+        "ros_type_hashes": {},
+        "notes": [
+            "contract_hash is authoritative for runtime handshake.",
+            "ROS type hashes are not yet emitted by this manifest; deferred to a follow-up.",
+        ],
+    }
+
+
+def write_manifest(root: str | Path, output: str | Path | None = None) -> Path:
+    """Write ``interface_manifest.json`` and return its path."""
+    root = Path(root)
+    path = Path(output) if output else root / MANIFEST_NAME
+    path.write_text(
+        json.dumps(build_manifest(root), indent=2, sort_keys=True, ensure_ascii=False) + "\n",
+        encoding="utf-8",
+    )
+    return path
+
+
+def check_manifest(root: str | Path, path: str | Path | None = None) -> list[str]:
+    """Return a list of differences; empty means the manifest is current."""
+    root = Path(root)
+    manifest_path = Path(path) if path else root / MANIFEST_NAME
+    if not manifest_path.exists():
+        return [f"missing manifest: {manifest_path}"]
+    expected = json.loads(manifest_path.read_text(encoding="utf-8"))
+    actual = build_manifest(root)
+    differences: list[str] = []
+    for key in ("schema_version", "package", "version", "contract_hash"):
+        if expected.get(key) != actual.get(key):
+            differences.append(f"{key}: expected {expected.get(key)!r}, got {actual.get(key)!r}")
+    expected_files = expected.get("files", {})
+    actual_files = actual.get("files", {})
+    for name in sorted(set(expected_files) | set(actual_files)):
+        if expected_files.get(name) != actual_files.get(name):
+            differences.append(
+                f"file {name}: expected {expected_files.get(name)!r}, got {actual_files.get(name)!r}"
+            )
+    return differences

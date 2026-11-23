@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://jcheng-robotics.github.io/schemas/acceptance-report.v1.schema.json",
+  "title": "Acceptance report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "date", "operator", "reviewer", "lockfile", "scenarios", "metrics", "result", "limitations"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "date": {"type": "string", "format": "date"},
+    "operator": {"type": "string"},
+    "reviewer": {"type": "string"},
+    "lockfile": {"type": "string"},
+    "scenarios": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "level", "result"],
+        "properties": {
+          "id": {"type": "string"},
+          "level": {"enum": ["L0", "L1", "L2", "L3", "L4", "L5"]},
+          "result": {"enum": ["pass", "fail", "inconclusive"]},
+          "evidence": {"type": "string"},
+          "notes": {"type": "string"}
+        }
+      }
+    },
+    "metrics": {"type": "object", "additionalProperties": {"type": ["number", "string", "boolean"]}},
+    "result": {"enum": ["pass", "fail", "inconclusive"]},
+    "limitations": {"type": "array", "items": {"type": "string"}}
+  }
+}

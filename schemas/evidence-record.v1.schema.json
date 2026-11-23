@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://jcheng-robotics.github.io/schemas/evidence-record.v1.schema.json",
+  "title": "Evidence record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "evidence_id", "kind", "created_at", "operator", "git", "contract_hash", "profile_hash", "environment", "request", "validation", "observations", "artifacts", "result", "limitations"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "evidence_id": {"type": "string", "minLength": 1},
+    "kind": {"enum": ["motion", "safety", "acceptance", "replay"]},
+    "created_at": {"type": "string", "format": "date-time"},
+    "operator": {"type": "string", "minLength": 1},
+    "git": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repo", "commit"],
+      "properties": {"repo": {"type": "string"}, "commit": {"type": "string"}, "tag": {"type": "string"}}
+    },
+    "contract_hash": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "profile_hash": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "environment": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "host": {"type": "string"},
+        "ros_distro": {"type": "string"},
+        "domains": {"type": "array", "items": {"type": "integer"}},
+        "notes": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "request": {"type": "object"},
+    "validation": {"type": "object"},
+    "observations": {"type": "array", "items": {"type": "object"}},
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["path", "sha256"],
+        "properties": {"path": {"type": "string"}, "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}}
+      }
+    },
+    "result": {"enum": ["pass", "fail", "inconclusive"]},
+    "limitations": {"type": "array", "items": {"type": "string"}}
+  }
+}

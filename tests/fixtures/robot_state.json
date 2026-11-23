@@ -1,0 +1,41 @@
+{
+  "header": {
+    "stamp": "2026-11-23T00:00:00Z",
+    "frame_id": "base_link"
+  },
+  "seq": 1,
+  "source": "jcheng_telemetry",
+  "fresh": true,
+  "joint_names": [
+    "joint1",
+    "joint2",
+    "joint3",
+    "joint4",
+    "joint5"
+  ],
+  "positions": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "velocities": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "gripper_position": 0.0,
+  "base_duty": [
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "battery_voltage": 7.4,
+  "profile_hash": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+  "truth": "measured",
+  "verification": "bus"
+}

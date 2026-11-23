@@ -1,0 +1,8 @@
+MotionCommand command
+---
+bool approved
+string reason_code
+string[] violations
+ValidationReport report
+string validation_id
+builtin_interfaces/Time expires_at

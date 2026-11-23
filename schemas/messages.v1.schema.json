@@ -1,0 +1,249 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://jcheng-robotics.github.io/schemas/messages.v1.schema.json",
+  "title": "JCHENG interfaces v0.1 message payloads",
+  "description": "JSON representation of jcheng_interfaces messages for HTTP and WebSocket transport. Field names mirror the ROS IDL. Times are ISO-8601 strings; durations are seconds.",
+  "$defs": {
+    "ContractVersion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["major", "minor", "patch", "contract_hash"],
+      "properties": {
+        "major": {"type": "integer", "minimum": 0, "maximum": 65535},
+        "minor": {"type": "integer", "minimum": 0, "maximum": 65535},
+        "patch": {"type": "integer", "minimum": 0, "maximum": 65535},
+        "contract_hash": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"}
+      }
+    },
+    "Header": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["stamp", "frame_id"],
+      "properties": {
+        "stamp": {"type": "string", "format": "date-time"},
+        "frame_id": {"type": "string"}
+      }
+    },
+    "CapabilityManifest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "name", "version", "contract", "scopes", "hardware_access", "publishes", "subscribes", "services", "max_rate_hz", "deadman_ms"],
+      "properties": {
+        "schema_version": {"type": "string"},
+        "name": {"type": "string"},
+        "version": {"type": "string"},
+        "contract": {"$ref": "#/$defs/ContractVersion"},
+        "scopes": {"type": "array", "items": {"enum": ["arm", "gripper", "base", "full"]}},
+        "hardware_access": {"const": false},
+        "publishes": {"type": "array", "items": {"type": "string"}},
+        "subscribes": {"type": "array", "items": {"type": "string"}},
+        "services": {"type": "array", "items": {"type": "string"}},
+        "max_rate_hz": {"type": "integer", "minimum": 0},
+        "deadman_ms": {"type": "integer", "minimum": 0, "maximum": 500}
+      }
+    },
+    "SafetyState": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["header", "seq", "state", "stop_latched", "violation_codes", "violations", "config_hash", "profile_hash", "last_valid_state_at"],
+      "properties": {
+        "header": {"$ref": "#/$defs/Header"},
+        "seq": {"type": "integer", "minimum": 0},
+        "state": {"enum": ["DISARMED", "ARMED_IDLE", "MOTION_ACTIVE", "STOP_LATCHED", "FAULT"]},
+        "stop_latched": {"type": "boolean"},
+        "violation_codes": {"type": "array", "items": {"type": "string"}},
+        "violations": {"type": "array", "items": {"type": "string"}},
+        "config_hash": {"type": "string"},
+        "profile_hash": {"type": "string"},
+        "last_valid_state_at": {"type": "string", "format": "date-time"}
+      }
+    },
+    "ControlLease": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["lease_id", "holder", "scope", "mode", "priority", "deadman_required", "issued_at", "expires_at", "contract"],
+      "properties": {
+        "lease_id": {"type": "string", "minLength": 1},
+        "holder": {"type": "string", "minLength": 1},
+        "scope": {"enum": ["arm", "gripper", "base", "full"]},
+        "mode": {"const": "exclusive"},
+        "priority": {"type": "integer", "minimum": 0, "maximum": 255},
+        "deadman_required": {"type": "boolean"},
+        "issued_at": {"type": "string", "format": "date-time"},
+        "expires_at": {"type": "string", "format": "date-time"},
+        "contract": {"$ref": "#/$defs/ContractVersion"}
+      }
+    },
+    "JointTrajectoryPoint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["positions", "velocities", "accelerations", "time_from_start"],
+      "properties": {
+        "positions": {"type": "array", "items": {"type": "number"}},
+        "velocities": {"type": "array", "items": {"type": "number"}},
+        "accelerations": {"type": "array", "items": {"type": "number"}},
+        "time_from_start": {"type": "number", "minimum": 0}
+      }
+    },
+    "JointTrajectory": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["joint_names", "points"],
+      "properties": {
+        "header": {"$ref": "#/$defs/Header"},
+        "joint_names": {"type": "array", "items": {"type": "string"}},
+        "points": {"type": "array", "items": {"$ref": "#/$defs/JointTrajectoryPoint"}}
+      }
+    },
+    "BasePulse": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["duty", "duration_s", "require_stopped_after"],
+      "properties": {
+        "duty": {"type": "array", "items": {"type": "number", "minimum": -1.0, "maximum": 1.0}},
+        "duration_s": {"type": "number", "exclusiveMinimum": 0},
+        "require_stopped_after": {"type": "boolean"}
+      }
+    },
+    "GripperCommand": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["position_rad", "max_velocity_rad_s", "duration_s", "verify_bus"],
+      "properties": {
+        "position_rad": {"type": "number", "minimum": 0.0, "maximum": 2.22},
+        "max_velocity_rad_s": {"type": "number", "exclusiveMinimum": 0},
+        "duration_s": {"type": "number", "exclusiveMinimum": 0},
+        "verify_bus": {"type": "boolean"}
+      }
+    },
+    "MotionCommand": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["intent_id", "idempotency_key", "lease_id", "source", "kind", "profile", "contract"],
+      "properties": {
+        "header": {"$ref": "#/$defs/Header"},
+        "intent_id": {"type": "string", "minLength": 1},
+        "idempotency_key": {"type": "string", "minLength": 1},
+        "lease_id": {"type": "string", "minLength": 1},
+        "source": {"type": "string", "minLength": 1},
+        "kind": {"enum": ["JOINT_TRAJECTORY", "JOINT_STEP", "POSE", "HOME", "BASE_PULSE", "GRIPPER"]},
+        "profile": {"enum": ["moveit", "step", "pose", "fast", "base", "gripper"]},
+        "contract": {"$ref": "#/$defs/ContractVersion"},
+        "trajectory": {"$ref": "#/$defs/JointTrajectory"},
+        "joint_names": {"type": "array", "items": {"type": "string"}},
+        "target_positions": {"type": "array", "items": {"type": "number"}},
+        "max_velocity_rad_s": {"type": "number", "exclusiveMinimum": 0},
+        "max_acceleration_rad_s2": {"type": "number", "exclusiveMinimum": 0},
+        "duration_s": {"type": "number", "exclusiveMinimum": 0},
+        "target_pose": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["position", "orientation"],
+          "properties": {
+            "position": {"type": "object", "required": ["x", "y", "z"], "properties": {"x": {"type": "number"}, "y": {"type": "number"}, "z": {"type": "number"}}},
+            "orientation": {"type": "object", "required": ["x", "y", "z", "w"], "properties": {"x": {"type": "number"}, "y": {"type": "number"}, "z": {"type": "number"}, "w": {"type": "number"}}}
+          }
+        },
+        "tip_link": {"type": "string"},
+        "frame_id": {"type": "string"},
+        "base_pulse": {"$ref": "#/$defs/BasePulse"},
+        "gripper": {"$ref": "#/$defs/GripperCommand"},
+        "verify_bus": {"type": "boolean"},
+        "require_measured_state": {"type": "boolean"},
+        "expected_profile_hash": {"type": "string"}
+      }
+    },
+    "MotionFeedback": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["intent_id", "phase", "progress", "measured_positions", "bus_verified", "stamp"],
+      "properties": {
+        "intent_id": {"type": "string"},
+        "phase": {"enum": ["VALIDATING", "QUEUED", "EXECUTING", "SETTLING", "VERIFYING"]},
+        "progress": {"type": "number", "minimum": 0, "maximum": 1},
+        "measured_positions": {"type": "array", "items": {"type": "number"}},
+        "bus_verified": {"type": "boolean"},
+        "stamp": {"type": "string", "format": "date-time"}
+      }
+    },
+    "MotionResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["intent_id", "outcome", "reason_code", "message", "safety", "measured_positions", "bus_verified", "calibration_invalidated", "completed_at", "evidence_id"],
+      "properties": {
+        "intent_id": {"type": "string"},
+        "outcome": {"enum": ["COMPLETED", "REJECTED", "ABORTED", "TIMEOUT", "UNKNOWN"]},
+        "reason_code": {"type": "string"},
+        "message": {"type": "string"},
+        "safety": {"$ref": "#/$defs/SafetyState"},
+        "measured_positions": {"type": "array", "items": {"type": "number"}},
+        "bus_verified": {"type": "boolean"},
+        "calibration_invalidated": {"type": "boolean"},
+        "completed_at": {"type": "string", "format": "date-time"},
+        "evidence_id": {"type": "string"}
+      }
+    },
+    "RobotState": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["header", "seq", "source", "fresh", "joint_names", "positions", "velocities", "gripper_position", "base_duty", "battery_voltage", "profile_hash", "truth", "verification"],
+      "properties": {
+        "header": {"$ref": "#/$defs/Header"},
+        "seq": {"type": "integer", "minimum": 0},
+        "source": {"type": "string"},
+        "fresh": {"type": "boolean"},
+        "joint_names": {"type": "array", "items": {"type": "string"}},
+        "positions": {"type": "array", "items": {"type": "number"}},
+        "velocities": {"type": "array", "items": {"type": "number"}},
+        "gripper_position": {"type": "number"},
+        "base_duty": {"type": "array", "items": {"type": "number"}},
+        "battery_voltage": {"type": "number", "minimum": 0},
+        "profile_hash": {"type": "string"},
+        "truth": {"enum": ["measured", "commanded"]},
+        "verification": {"enum": ["bus", "timed", "open_loop"]}
+      }
+    },
+    "TeleopCommand": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["header", "seq", "lease_id", "source", "contract", "mode", "joint_velocity_rad_s", "cartesian_velocity", "deadman"],
+      "properties": {
+        "header": {"$ref": "#/$defs/Header"},
+        "seq": {"type": "integer", "minimum": 0},
+        "lease_id": {"type": "string"},
+        "source": {"type": "string"},
+        "contract": {"$ref": "#/$defs/ContractVersion"},
+        "mode": {"enum": ["JOINT_VELOCITY", "CARTESIAN_VELOCITY"]},
+        "joint_velocity_rad_s": {"type": "array", "items": {"type": "number"}},
+        "cartesian_velocity": {
+          "type": "object",
+          "required": ["linear", "angular"],
+          "properties": {
+            "linear": {"type": "object", "required": ["x", "y", "z"], "properties": {"x": {"type": "number"}, "y": {"type": "number"}, "z": {"type": "number"}}},
+            "angular": {"type": "object", "required": ["x", "y", "z"], "properties": {"x": {"type": "number"}, "y": {"type": "number"}, "z": {"type": "number"}}}
+          }
+        },
+        "deadman": {"type": "boolean"}
+      }
+    },
+    "ValidationReport": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "approved", "reason_code", "check_ids", "violations", "duration_s", "point_count", "workspace_checked", "table_checked", "max_velocity_rad_s", "max_acceleration_rad_s2", "checked_at"],
+      "properties": {
+        "schema_version": {"type": "integer", "minimum": 0},
+        "approved": {"type": "boolean"},
+        "reason_code": {"type": "string"},
+        "check_ids": {"type": "array", "items": {"type": "string"}},
+        "violations": {"type": "array", "items": {"type": "string"}},
+        "duration_s": {"type": "number", "minimum": 0},
+        "point_count": {"type": "integer", "minimum": 0},
+        "workspace_checked": {"type": "boolean"},
+        "table_checked": {"type": "boolean"},
+        "max_velocity_rad_s": {"type": "number", "minimum": 0},
+        "max_acceleration_rad_s2": {"type": "number", "minimum": 0},
+        "checked_at": {"type": "string", "format": "date-time"}
+      }
+    }
+  }
+}

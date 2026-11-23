@@ -1,0 +1,31 @@
+{
+  "intent_id": "intent-1",
+  "outcome": "COMPLETED",
+  "reason_code": "OK",
+  "message": "ok",
+  "safety": {
+    "header": {
+      "stamp": "2026-11-23T00:00:00Z",
+      "frame_id": "base_link"
+    },
+    "seq": 1,
+    "state": "ARMED_IDLE",
+    "stop_latched": false,
+    "violation_codes": [],
+    "violations": [],
+    "config_hash": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+    "profile_hash": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+    "last_valid_state_at": "2026-11-23T00:00:00Z"
+  },
+  "measured_positions": [
+    0.1,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "bus_verified": true,
+  "calibration_invalidated": false,
+  "completed_at": "2026-11-23T00:00:01Z",
+  "evidence_id": "ev-1"
+}
