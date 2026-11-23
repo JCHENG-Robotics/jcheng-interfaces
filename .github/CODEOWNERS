@@ -1,0 +1,7 @@
+# M1: single owner until maintainer roles are granted.
+* @JerichoCheng
+
+# Contract surfaces require explicit review.
+/ros2_ws/src/ @JerichoCheng
+/schemas/     @JerichoCheng
+/docs/        @JerichoCheng
