@@ -29,7 +29,9 @@ JCHENG Robotics 的统一接口契约仓库。
 因此 M1/M2 的门禁是：**先审计，后定版**。
 
 - [契约审计计划](docs/CONTRACT_AUDIT_PLAN.md)
+- [契约审计稿（M2.1，待签字）](docs/CONTRACT_AUDIT.md)
 - [M1 范围](docs/M1-SCOPE.md)
+- [M2 范围](docs/M2-SCOPE.md)
 - [契约草案原则](docs/CONTRACT.md)
 - [版本策略](docs/VERSIONING.md)
 - [兼容性矩阵模板](docs/COMPATIBILITY.md)
