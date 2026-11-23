@@ -1,7 +1,7 @@
-# M1: single owner until maintainer roles are granted.
-* @JerichoCheng
+# Two-reviewer model (adopted 2026-11-23). Both maintainers can approve.
+* @JerichoCheng @JerichoSwaine
 
 # Contract surfaces require explicit review.
-/ros2_ws/src/ @JerichoCheng
-/schemas/     @JerichoCheng
-/docs/        @JerichoCheng
+/ros2_ws/src/ @JerichoCheng @JerichoSwaine
+/schemas/     @JerichoCheng @JerichoSwaine
+/docs/        @JerichoCheng @JerichoSwaine
