@@ -43,8 +43,7 @@ jobs:
           apt-get update
           apt-get install -y --no-install-recommends \
             python3-colcon-common-extensions \
-            python3-jsonschema \
-            python3-pytest \
+            python3-pip \
             python3-setuptools \
             python3-yaml \
             ros-humble-ament-cmake \
@@ -55,6 +54,12 @@ jobs:
             ros-humble-rosidl-default-generators \
             ros-humble-rosidl-default-runtime \
             ros-humble-std-msgs
+      - name: Install Python contract test tooling
+        shell: bash
+        run: |
+          python3 -m pip install --no-cache-dir \
+            'jsonschema==4.23.0' \
+            'pytest==8.3.4'
       - name: Build jcheng_interfaces
         shell: bash
         run: |

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import sys
 from pathlib import Path
 
 import pytest
@@ -8,6 +9,9 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
 FIXTURES = ROOT / "tests" / "fixtures"
+for path in (ROOT, ROOT / "python"):
+    if str(path) not in sys.path:
+        sys.path.insert(0, str(path))
 
 
 @pytest.fixture(scope="session")
