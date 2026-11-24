@@ -29,6 +29,9 @@ for f in \
   docs/COMPATIBILITY.md \
   ros2_ws/src/jcheng_interfaces/package.xml \
   ros2_ws/src/jcheng_interfaces/CMakeLists.txt \
+  README.zh-CN.md \
+  ROADMAP.md \
+  ACCEPTANCE.md \
   .github/workflows/ci.yml \
   .github/CODEOWNERS \
   scripts/check_repo_gate.sh
