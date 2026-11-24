@@ -1,63 +1,115 @@
 # jcheng-interfaces
 
-JCHENG Robotics 的统一接口契约仓库。
+The canonical contract repository for JCHENG Robotics.
 
-> 状态：**M2 v0.1 定义中；M2.1 审计已签字（2026-11-23）。**
-> `jcheng_interfaces` ROS 包与 v0.1 Schema 正在本分支实现；审计见
-> [`docs/CONTRACT_AUDIT.md`](docs/CONTRACT_AUDIT.md)。
+> Status: **Experimental** — v0.1.0 as of 2026-11-23. The contract audit is
+> signed, 15 contract tests pass in CI, and the tag is verified. No runtime
+> nodes, hardware access or vendor dependencies.
+> English canonical; see [README.zh-CN.md](README.zh-CN.md) for the Chinese translation.
 
-## 1. 职责
+## 1. Responsibility
 
-- 一个 ROS 2 包 `jcheng_interfaces`（v0.1）。
-- JSON Schema、OpenAPI、WebSocket 协议。
-- 纯 Python 契约绑定 `jcheng_contracts`（M2）。
-- 契约哈希 `contract_hash` 与 `interface_manifest.json`。
-- 兼容性检查与契约文档。
+- One ROS 2 package, `jcheng_interfaces`: 14 msg / 10 srv / 1 action.
+- JSON Schema, OpenAPI `/v1`, WebSocket `/v1` and the error-code registry.
+- Pure Python contract bindings, `jcheng_contracts`.
+- The `contract_hash` and `interface_manifest.json`.
+- Compatibility checks and contract documentation.
 
-**不包含：** 节点、硬件访问、厂商依赖、业务逻辑。
+**Not included:** nodes, hardware access, vendor dependencies, business logic.
 
-## 2. 为什么先审计
+## 2. Why audit first
 
-现有基线已经有一套分散的接口：
+The baseline already carried a scattered interface surface:
 
-- `arm_interfaces/action/ArmMove.action`、`srv/ValidateTrajectory.srv`。
-- Studio 后端 `/api/*`（预览、执行、停止、租约、事件）。
-- 网关 `/motion/*`、`/chassis/*`、`/state`、`/safety_stop`。
-- `armpi_safety` 的 `ValidateTrajectory` 与 `/safety_stop` 消费语义。
+- `arm_interfaces/action/ArmMove.action` and `srv/ValidateTrajectory.srv`.
+- Studio backend `/api/*` (preview, execute, stop, lease, events).
+- Gateway `/motion/*`, `/chassis/*`, `/state`, `/safety_stop`.
+- `armpi_safety`'s consumption of `ValidateTrajectory` and `/safety_stop`.
 
-如果直接定义新契约，容易重复命名、改变单位/坐标系、破坏兼容性或丢失安全语义。
-因此 M1/M2 的门禁是：**先审计，后定版**。
+Defining a new contract directly would risk duplicate names, changed
+units/frames, broken compatibility or lost safety semantics. The M1/M2 gate was
+therefore: **audit first, define second**.
 
-- [契约审计计划](docs/CONTRACT_AUDIT_PLAN.md)
-- [契约审计（M2.1，已签字）](docs/CONTRACT_AUDIT.md)
-- [M1 范围](docs/M1-SCOPE.md)
-- [M2 范围](docs/M2-SCOPE.md)
-- [契约原则（v0.1）](docs/CONTRACT.md)
-- [版本策略](docs/VERSIONING.md)
-- [兼容性矩阵](docs/COMPATIBILITY.md)
+- [Contract audit plan](docs/CONTRACT_AUDIT_PLAN.md)
+- [Contract audit (M2.1, signed)](docs/CONTRACT_AUDIT.md)
+- [M1 scope](docs/M1-SCOPE.md)
+- [M2 scope](docs/M2-SCOPE.md)
+- [Contract principles (v0.1)](docs/CONTRACT.md)
+- [Version policy](docs/VERSIONING.md)
+- [Compatibility matrix](docs/COMPATIBILITY.md)
 
-## 3. v0.1 目录
+## 3. v0.1 layout
 
 ```text
 ros2_ws/src/jcheng_interfaces/    # 14 msg / 10 srv / 1 action
 schemas/                          # JSON Schema / OpenAPI / WS / error codes
-python/jcheng_contracts/          # Python 绑定与 manifest 工具
-tests/                            # 契约/兼容性/parity 测试
-tools/                            # manifest / schema / 硬件原语检查
-interface_manifest.json           # 逐文件哈希 + 契约哈希
+python/jcheng_contracts/          # Python bindings and manifest tooling
+tests/                            # contract / compatibility / parity tests
+tools/                            # manifest / schema / hardware-primitive checks
+interface_manifest.json           # per-file hashes + contract hash
 ```
 
-v0.1 已构建并通过 15 项本地契约测试；契约哈希由
-`interface_manifest.json` 固定。TypeScript 绑定尚未生成（后续 M2.3 补充）。
+v0.1 builds and passes 15 contract tests; `interface_manifest.json` pins the
+contract hash. TypeScript bindings are not generated yet (planned for M2.3).
 
-## 4. 约束
+## 4. Requirements
 
-- 契约不提供原始舵机寄存器、任意占空比、直接厂商话题原语。
-- 运动只通过 `ExecuteMotion`；状态必须标注 `truth` 与 `verification`。
-- 契约变更先于消费者变更；运行时用契约哈希握手。
-- 不修改 `jcheng-manipulation v1.0.0` 的标签、证据或实验历史。
+- ROS 2 Humble or Jazzy (CI uses Humble).
+- Python ≥ 3.10 with `jsonschema`, `PyYAML` and `pytest` for the test layer.
+- No hardware, devices or runtime nodes.
 
-## 5. 许可
+## 5. Quick start
 
-许可证审查进行中；本仓库没有 `LICENSE`，默认版权保留。
-详见 [LICENSE-REVIEW.md](LICENSE-REVIEW.md) 与 `.github` 仓库的完整清单。
+```bash
+# Contract tests (pure Python, no ROS)
+python3 -m pytest -q
+
+# Contract gates
+python3 tools/generate_manifest.py --check
+python3 tools/check_schemas.py
+python3 tools/check_no_hardware.py
+
+# Build the ROS interface package
+source /opt/ros/humble/setup.bash
+colcon build --base-paths ros2_ws/src --packages-select jcheng_interfaces
+source install/setup.bash
+ros2 interface show jcheng_interfaces/msg/MotionCommand
+```
+
+`tools/generate_manifest.py --write` rebuilds the manifest after a contract
+change; CI uses `--check` and rejects a stale manifest.
+
+## 6. Constraints
+
+- The contract exposes no raw servo registers, arbitrary duty cycle or direct
+  vendor-topic primitives.
+- Motion is expressed only through `ExecuteMotion`; state must carry `truth`
+  and `verification`.
+- Contract changes precede consumer changes; runtimes hand-shake on the
+  contract hash.
+- The `jcheng-manipulation v1.0.0` tags, evidence and experiment history are
+  never modified.
+
+## 7. Validation status
+
+| Claim | Status | Evidence |
+|---|---|---|
+| IDL / Schema / OpenAPI / error-code parity | Verified (L0–L1) | 15 contract tests; `contract-ci` |
+| Manifest and contract hash match the files | Verified (L0) | `interface_manifest.json`; `generate_manifest.py --check` |
+| No hardware primitives, no runtime nodes | Verified (L0) | `check_no_hardware.py`; repository gate |
+| TypeScript bindings | Not provided | Planned for M2.3 |
+
+Full report: [ACCEPTANCE.md](ACCEPTANCE.md).
+
+## 8. Related repositories
+
+- [`jcheng-system`](https://github.com/JCHENG-Robotics/jcheng-system) — the main runtime consumer.
+- [`jcheng-mobile`](https://github.com/JCHENG-Robotics/jcheng-mobile) and
+  [`jcheng-perception`](https://github.com/JCHENG-Robotics/jcheng-perception) — capability repositories.
+- [`.github`](https://github.com/JCHENG-Robotics/.github) — ecosystem roadmap, changelog and acceptance.
+
+## 9. License
+
+The license review is in progress; this repository has no `LICENSE` and all
+rights are reserved. See [LICENSE-REVIEW.md](LICENSE-REVIEW.md) and the full
+inventory in `.github`.

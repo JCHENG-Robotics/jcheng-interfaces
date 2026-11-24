@@ -1,16 +1,35 @@
 # Changelog
 
-## 0.1.0 (2026-11-23)
+All notable changes to this project are documented here. Format based on
+[Keep a Changelog](https://keepachangelog.com/en/1.1.0/); this project follows
+[Semantic Versioning](https://semver.org/).
 
-- M2.1 契约审计签字（`docs/CONTRACT_AUDIT.md`）。
-- 建立 `jcheng_interfaces` ROS 2 包：核心消息、服务与 `ExecuteMotion` action。
-- 建立 v0.1 JSON Schema、OpenAPI `/v1`、WebSocket 协议与错误码注册表。
-- 建立 `jcheng_contracts` Python 绑定、manifest 生成与契约哈希。
-- 建立 M2 契约 CI（Humble + Jazzy、Schema parity、硬件原语扫描）。
-- 没有运行节点、没有硬件依赖、没有修改 `jcheng-manipulation v1.0.0`。
+## [Unreleased]
 
-## 版本规则
+No changes since v0.1.0.
 
-- `0.y.z`：初始开发期；任何 IDL 结构变化都提升 minor 并改变契约哈希。
-- `1.0.0` 起：破坏性变更提升 major；新增字段/消息提升 minor；仅文档/生成器修复为 patch。
-- 具体规则见 `docs/VERSIONING.md` 与设计文档 `05-versioning-lock-release.md`。
+## [0.1.0] — 2026-11-23
+
+First contract release; signed tag `v0.1.0`.
+
+### Added
+
+- `jcheng_interfaces` ROS 2 package: 14 messages, 10 services and the
+  `ExecuteMotion` action.
+- v0.1 JSON Schemas, OpenAPI `/v1`, WebSocket `/v1` protocol and the
+  52-entry error-code registry.
+- `jcheng_contracts` Python bindings, manifest generator and the contract
+  hash `sha256:0b8d72ced7f54d444d6851d8b99a51a78e2bed3f687324f51a15f76557f24b42`.
+- Contract CI (`contract-ci`): manifest, schema, parity, no-hardware and
+  repository gates; the M2 execution record also reports a local Jazzy build
+  with the same checks.
+- Contract audit and scope documents (`docs/CONTRACT_AUDIT.md`,
+  `docs/M2-SCOPE.md`).
+
+## Version policy
+
+- `0.y.z`: initial development; any IDL structure change raises the minor
+  version and changes the contract hash.
+- From `1.0.0`: breaking changes raise major; new fields/messages raise minor;
+  documentation or generator fixes are patch.
+- The full rules are in `docs/VERSIONING.md`.
