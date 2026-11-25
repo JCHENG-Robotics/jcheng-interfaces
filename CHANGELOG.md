@@ -6,7 +6,11 @@ All notable changes to this project are documented here. Format based on
 
 ## [Unreleased]
 
-No changes since v0.1.0.
+### Added
+
+- `scripts/humble_ci.sh`: local Humble build and contract-check wrapper in the
+  `armpi-humble-moveit` image, mirroring the `m2-contract` CI job with a
+  disposable workspace copy.
 
 ## [0.1.0] — 2026-11-23
 
