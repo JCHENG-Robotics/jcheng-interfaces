@@ -11,6 +11,15 @@ All notable changes to this project are documented here. Format based on
 - `scripts/humble_ci.sh`: local Humble build and contract-check wrapper in the
   `armpi-humble-moveit` image, mirroring the `m2-contract` CI job with a
   disposable workspace copy.
+- Proposal `docs/proposals/measured-facts.md`: additive named
+  `measured_joints`/`measured_gripper_rad` fields for `MotionResult`, populated
+  only from a verified bus read. No schema or contract-hash change.
+- Proposal `docs/proposals/stop-confirmation-levels.md`: additive
+  `request_accepted`/`backend_confirmed` levels and `physical_stop=unverified`
+  for `StopResponse`. No schema or contract-hash change.
+- Proposal `docs/proposals/piper-x-robot-profile.md`: PiPER X profile and
+  joint-limit contract for a simulation-only arm. No schema or contract-hash
+  change.
 
 ## [0.1.0] — 2026-11-23
 
