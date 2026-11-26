@@ -1,11 +1,13 @@
 # jcheng-interfaces
 
+**English** | [简体中文](README.zh-CN.md)
+
 The canonical contract repository for JCHENG Robotics.
 
 > Status: **Experimental** — v0.1.0 as of 2026-11-23. The contract audit is
 > signed, 15 contract tests pass in CI, and the tag is verified. No runtime
 > nodes, hardware access or vendor dependencies.
-> English canonical; see [README.zh-CN.md](README.zh-CN.md) for the Chinese translation.
+> English canonical; the Chinese README is a translation.
 
 ## 1. Responsibility
 
