@@ -1,8 +1,9 @@
 # Proposal — stop confirmation levels in `StopResponse`
 
 > Status: **accepted and implemented in v0.2.0** (2026-11-27). The additive
-> schema is in `schemas/openapi/jcheng-gateway.v1.yaml`; `VERSION` is `0.2.0`
-> and `interface_manifest.json` carries the new hash. The tag is pending.
+> schema is in `schemas/openapi/jcheng-gateway.v1.yaml`; `VERSION` is `0.2.0`,
+> `interface_manifest.json` carries the new hash, and the signed `v0.2.0` tag
+> is GitHub-verified.
 > The original proposal (2026-11-26) made no schema or tag change.
 > Origin: `jcheng-system` execution-model revision R5 and the P0 C2 probe.
 

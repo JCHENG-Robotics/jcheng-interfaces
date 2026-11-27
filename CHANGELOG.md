@@ -21,6 +21,7 @@ All notable changes to this project are documented here. Format based on
 ## [0.2.0] — 2026-11-27
 
 Additive stop-confirmation contract release; no IDL or ROS message change.
+Signed tag `v0.2.0` is GitHub-verified.
 
 ### Added
 
