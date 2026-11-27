@@ -13,7 +13,7 @@ from jcheng_contracts.manifest import (
 def test_manifest_has_required_files(root: Path) -> None:
     manifest = build_manifest(root)
     assert manifest["package"] == "jcheng_interfaces"
-    assert manifest["version"] == "0.1.0"
+    assert manifest["version"] == (root / "VERSION").read_text(encoding="utf-8").strip()
     assert manifest["contract_hash"].startswith("sha256:")
     assert len(manifest["contract_hash"]) == len("sha256:") + 64
     files = manifest["files"]

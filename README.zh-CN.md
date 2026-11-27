@@ -4,8 +4,9 @@
 
 JCHENG Robotics 的统一接口契约仓库。
 
-> 状态：**实验性** — v0.1.0（2026-11-23）。契约审计已签字；15 项契约测试通过；
-> 已打签名标签 `v0.1.0`。不包含节点、硬件访问或厂商依赖。
+> 状态：**实验性** — v0.2.0（2026-11-27）。契约审计已签字；契约测试通过；
+> `v0.1.0` 仍是已发布标签，v0.2.0 增加停止确认的 additive 字段。
+> 不包含节点、硬件访问或厂商依赖。
 > 本文为英文主文档的中文对照；如有歧义，以英文版为准。
 
 ## 1. 职责
@@ -38,7 +39,7 @@ JCHENG Robotics 的统一接口契约仓库。
 - [版本策略](docs/VERSIONING.md)
 - [兼容性矩阵](docs/COMPATIBILITY.md)
 
-## 3. v0.1 目录
+## 3. v0.2 目录
 
 ```text
 ros2_ws/src/jcheng_interfaces/    # 14 msg / 10 srv / 1 action
@@ -49,8 +50,10 @@ tools/                            # manifest / schema / 硬件原语检查
 interface_manifest.json           # 逐文件哈希 + 契约哈希
 ```
 
-v0.1 已构建并通过 15 项本地契约测试；契约哈希由
-`interface_manifest.json` 固定。TypeScript 绑定尚未生成（后续 M2.3 补充）。
+v0.2 是 additive schema 发布：`StopResponse` 增加 `confirmation`
+（`request_accepted` / `backend_confirmed`）、`physical_stop=unverified` 和
+可选的 `requested_at`。IDL、ROS 消息集和 WebSocket 协议不变；由于 OpenAPI
+纳入契约哈希，哈希会变化。完整测试本地通过；TypeScript 绑定仍按 M2.3 计划。
 
 ## 4. 依赖
 
