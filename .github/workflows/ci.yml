@@ -79,3 +79,14 @@ jobs:
           python3 tools/check_no_hardware.py
           python3 -m pytest -q
           ros2 interface show jcheng_interfaces/msg/MotionCommand >/dev/null
+
+  # Pilot: run the organization contract-check next to the repository-local
+  # m2-contract job. `v1` is a moving major alias for the organization reusable
+  # workflows; it moves only for CI security or fix changes.
+  org-contract-check:
+    name: org-contract-check
+    uses: JCHENG-Robotics/.github/.github/workflows/reusable-contract-check.yml@v1
+    with:
+      interfaces-path: "."
+      base-ref: "v0.2.0"
+      run-tests: true
