@@ -6,6 +6,17 @@ All notable changes to this project are documented here. Format based on
 
 ## [Unreleased]
 
+### Changed
+
+- Added `intent_source` to the `safety.class` enum in
+  `schemas/capability-manifest.v1.schema.json`, implementing
+  `docs/proposals/capability-intent-source.md`. This is a minor schema change:
+  the contract hash changes and consumers must re-pin after the `v0.3.0` tag.
+  No IDL or message change. The class grants no motion authority; the system
+  lease, deadman, limits and stop latch still decide. This draft does not close
+  teleop M2: a `TeleopCommand` v0.2 message and a real input/lease adapter are
+  still required.
+
 ### Added
 
 - `scripts/humble_ci.sh`: local Humble build and contract-check wrapper in the
