@@ -90,3 +90,9 @@ jobs:
       interfaces-path: "."
       base-ref: "v0.2.0"
       run-tests: true
+
+  # Second adoption step: secret scan, Action pin check and the LICENSE hold
+  # from the organization security baseline.
+  org-security:
+    name: org-security
+    uses: JCHENG-Robotics/.github/.github/workflows/reusable-security.yml@v1
