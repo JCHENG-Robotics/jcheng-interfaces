@@ -1,6 +1,6 @@
 # Acceptance report — jcheng-interfaces
 
-> Status: **pass** as of 2026-11-23 for v0.1.0.
+> Status: **pass** as of 2026-11-27 for v0.2.0.
 > Operator: JerichoCheng. Reviewer: JerichoSwaine (audit and PR approval).
 > Scope: contract package, schemas, Python bindings, manifest and CI.
 > No runtime node, hardware access or motion command is involved.
@@ -16,6 +16,8 @@
 | Contract tests | `python3 -m pytest -q` | L1 | pass (15 tests) | `tests/` |
 | ROS interface build | `colcon build --packages-select jcheng_interfaces` | L0 | pass | `contract-ci` (Humble) |
 | Interface smoke | `ros2 interface show jcheng_interfaces/msg/MotionCommand` | L0 | pass | `contract-ci` |
+| Organization contract-check | `reusable-contract-check.yml@v1` | L0–L1 | pass | `contract-ci` (`org-contract-check`) |
+| Organization security baseline | `reusable-security.yml@v1` | L0 | pass | `contract-ci` (`org-security`) |
 
 ## 2. Verified claims
 
