@@ -1,5 +1,5 @@
 {
-  "contract_hash": "sha256:afca22a42f7163e0351d185d5a8577b0b51f2f3da4b92278f161a4a7d2c35b1c",
+  "contract_hash": "sha256:8120c5028b821370f47864dd59d720923c08a5247f90694101f575dd8a5cc2fb",
   "files": {
     "ros2_ws/src/jcheng_interfaces/action/ExecuteMotion.action": "343d434d456b32c4a76e25f498b13663d74913903c4cf5f757ca3cd1df428be2",
     "ros2_ws/src/jcheng_interfaces/msg/BasePulse.msg": "9623e779bddb8281de7ed71b60b9029921ae71412c749731e2bd3ffa0bd929e1",
@@ -27,7 +27,7 @@
     "ros2_ws/src/jcheng_interfaces/srv/RevokeLease.srv": "db29180b0f0e1aefe5ffa5847723523e20c4f3e8bbcd4a48515e073b1c995dcb",
     "ros2_ws/src/jcheng_interfaces/srv/ValidateMotion.srv": "2baf008f4acfd164924a3fad46baa839a3beca6f1ff741bc4ffcb2baceffb6fd",
     "schemas/acceptance-report.v1.schema.json": "8f8aa955534f53e80e99ad87af1de782e605404923e2f9ecd610553e2da6f3eb",
-    "schemas/capability-manifest.v1.schema.json": "efef1ae0c4697b47672c5f8446f83864dc4df8c2305393a78a0fe5f0aef401e6",
+    "schemas/capability-manifest.v1.schema.json": "994018077da013b82a74a60f65706e1d57d1463c6f375ad7135bd093712dc34b",
     "schemas/error-code-mapping.v1.json": "c2e6c7a42f65a495632200a7c817dc16b933242f5bdfa4886484d881471e217a",
     "schemas/error-codes.v1.json": "eb8b8557c4574244ee2595e2be048f2ca4d60dbceedcc3be746a2142857f792a",
     "schemas/evidence-record.v1.schema.json": "5eae17da2ba2b95680a72a5027a332ecc7966be5d66b1dacb74b1de7356ab91d",
@@ -45,5 +45,5 @@
   "package": "jcheng_interfaces",
   "ros_type_hashes": {},
   "schema_version": 1,
-  "version": "0.2.0"
+  "version": "0.3.0"
 }

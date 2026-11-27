@@ -25,7 +25,7 @@
       "additionalProperties": false,
       "required": ["class", "scopes", "requires_lease", "max_rate_hz", "deadman_ms"],
       "properties": {
-        "class": {"enum": ["motion_source", "observer", "offline"]},
+        "class": {"enum": ["motion_source", "observer", "intent_source", "offline"]},
         "scopes": {"type": "array", "items": {"enum": ["arm", "gripper", "base", "full"]}},
         "requires_lease": {"const": true},
         "max_rate_hz": {"type": "integer", "minimum": 1},
