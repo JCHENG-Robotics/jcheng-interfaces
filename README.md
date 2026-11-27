@@ -5,9 +5,9 @@
 The canonical contract repository for JCHENG Robotics.
 
 > Status: **Experimental** — v0.2.0 as of 2026-11-27. The contract audit is
-> signed, the contract test suite passes in CI, and v0.1.0 remains the released
-> tag. v0.2.0 adds the additive stop-confirmation fields; no runtime nodes,
-> hardware access or vendor dependencies.
+> signed, the contract test suite passes in CI, and the signed `v0.2.0` tag is
+> GitHub-verified. v0.2.0 adds the additive stop-confirmation fields; no
+> runtime nodes, hardware access or vendor dependencies.
 > English canonical; the Chinese README is a translation.
 
 ## 1. Responsibility
