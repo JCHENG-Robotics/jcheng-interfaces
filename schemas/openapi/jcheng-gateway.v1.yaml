@@ -533,11 +533,24 @@ components:
     StopResponse:
       type: object
       additionalProperties: false
-      required: [accepted, safety]
+      required: [accepted, safety, confirmation, physical_stop]
       properties:
         accepted: {type: boolean}
         safety: {$ref: "../messages.v1.schema.json#/$defs/SafetyState"}
         message: {type: string}
+        requested_at: {type: string, format: date-time}
+        confirmation:
+          type: string
+          enum: [request_accepted, backend_confirmed]
+          description: >-
+            S1 request_accepted means the gateway latched the software stop and
+            accepted the request. S2 backend_confirmed means the hold/zero
+            command returned and the motion session reached terminal ABORTED.
+        physical_stop:
+          type: string
+          const: unverified
+          description: >-
+            S3 is not measurable on this platform; never claim a physical stop.
     CapabilitiesResponse:
       type: object
       additionalProperties: false

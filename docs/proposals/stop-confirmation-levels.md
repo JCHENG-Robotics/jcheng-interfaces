@@ -1,7 +1,9 @@
 # Proposal — stop confirmation levels in `StopResponse`
 
-> Status: **proposal** (2026-11-26). No schema, tag or contract-hash change is
-> made in this PR. This document asks for a contract review.
+> Status: **accepted and implemented in v0.2.0** (2026-11-27). The additive
+> schema is in `schemas/openapi/jcheng-gateway.v1.yaml`; `VERSION` is `0.2.0`
+> and `interface_manifest.json` carries the new hash. The tag is pending.
+> The original proposal (2026-11-26) made no schema or tag change.
 > Origin: `jcheng-system` execution-model revision R5 and the P0 C2 probe.
 
 ## 1. Problem
@@ -81,12 +83,18 @@ Rules:
 - Application supervisor: S1/S2 recorded separately; no S2 from HTTP 200.
 - Studio renders S1/S2/S3 without treating any as an e-stop.
 
-## 7. Open questions
+## 7. Resolved in v0.2.0
 
-- Required or optional during the transition?
-- Is `physical_stop` a const string, a boolean, or an enum with future values?
-- Does S2 require a bus read, or only the hold/zero return plus terminal
-  `ABORTED`?
-- Does the ROS action cancel path use the same confirmation vocabulary?
-- Should a failed hold return HTTP 200 with S1, or a non-200 error? The
-  application already records both cases; the contract should say which.
+- `confirmation` and `physical_stop` are **required** in v0.2.0; clients pinned
+  to v0.1.0 must adopt the new hash.
+- `physical_stop` is a const string, currently `unverified`. A future
+  measurement needs a new contract, not a reinterpretation.
+- S2 requires the hold/zero call to return without error **and** the session to
+  reach terminal `ABORTED`. It does not require a bus read.
+- The ROS action cancel path is not changed in v0.2.0; mapping it to the same
+  vocabulary remains a system/runtime task.
+- A failed hold is an error (non-200) and is never S2. Whether the error
+  envelope also carries S1 is left to the system error contract; the gateway
+  must not upgrade it to S2.
+- `requested_at` is optional; producers that emit it use an ISO 8601
+  timestamp. It is included because the system already emits it.

@@ -4,9 +4,10 @@
 
 The canonical contract repository for JCHENG Robotics.
 
-> Status: **Experimental** — v0.1.0 as of 2026-11-23. The contract audit is
-> signed, 15 contract tests pass in CI, and the tag is verified. No runtime
-> nodes, hardware access or vendor dependencies.
+> Status: **Experimental** — v0.2.0 as of 2026-11-27. The contract audit is
+> signed, the contract test suite passes in CI, and v0.1.0 remains the released
+> tag. v0.2.0 adds the additive stop-confirmation fields; no runtime nodes,
+> hardware access or vendor dependencies.
 > English canonical; the Chinese README is a translation.
 
 ## 1. Responsibility
@@ -40,7 +41,7 @@ therefore: **audit first, define second**.
 - [Version policy](docs/VERSIONING.md)
 - [Compatibility matrix](docs/COMPATIBILITY.md)
 
-## 3. v0.1 layout
+## 3. v0.2 layout
 
 ```text
 ros2_ws/src/jcheng_interfaces/    # 14 msg / 10 srv / 1 action
@@ -51,8 +52,12 @@ tools/                            # manifest / schema / hardware-primitive check
 interface_manifest.json           # per-file hashes + contract hash
 ```
 
-v0.1 builds and passes 15 contract tests; `interface_manifest.json` pins the
-contract hash. TypeScript bindings are not generated yet (planned for M2.3).
+v0.2 is an additive schema release: `StopResponse` gains `confirmation`
+(`request_accepted` / `backend_confirmed`), `physical_stop=unverified` and the
+optional `requested_at` timestamp. The IDL, ROS message set and WebSocket
+protocol are unchanged; the contract hash changes because the OpenAPI schema is
+covered by it. The full suite passes locally; TypeScript bindings are still
+planned for M2.3.
 
 ## 4. Requirements
 
