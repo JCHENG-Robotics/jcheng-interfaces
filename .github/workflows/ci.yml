@@ -79,3 +79,14 @@ jobs:
           python3 tools/check_no_hardware.py
           python3 -m pytest -q
           ros2 interface show jcheng_interfaces/msg/MotionCommand >/dev/null
+
+  # Pilot: run the organization contract-check next to the repository-local
+  # m2-contract job. The pin moves to the .github merge commit (or a v1 tag)
+  # before this PR leaves draft; see PR #19.
+  org-contract-check:
+    name: org-contract-check
+    uses: JCHENG-Robotics/.github/.github/workflows/reusable-contract-check.yml@9ef38a5f5026d6a55348c191a48854a149175871
+    with:
+      interfaces-path: "."
+      base-ref: "v0.2.0"
+      run-tests: true
