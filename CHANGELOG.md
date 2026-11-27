@@ -14,12 +14,30 @@ All notable changes to this project are documented here. Format based on
 - Proposal `docs/proposals/measured-facts.md`: additive named
   `measured_joints`/`measured_gripper_rad` fields for `MotionResult`, populated
   only from a verified bus read. No schema or contract-hash change.
-- Proposal `docs/proposals/stop-confirmation-levels.md`: additive
-  `request_accepted`/`backend_confirmed` levels and `physical_stop=unverified`
-  for `StopResponse`. No schema or contract-hash change.
 - Proposal `docs/proposals/piper-x-robot-profile.md`: PiPER X profile and
   joint-limit contract for a simulation-only arm. No schema or contract-hash
   change.
+
+## [0.2.0] — 2026-11-27
+
+Additive stop-confirmation contract release; no IDL or ROS message change.
+
+### Added
+
+- `StopResponse.confirmation` with `request_accepted` (S1) and
+  `backend_confirmed` (S2), required in v0.2.0.
+- `StopResponse.physical_stop` fixed to `unverified`; S3 is not measurable on
+  this platform.
+- `StopResponse.requested_at` as an optional ISO 8601 timestamp, matching the
+  existing system response.
+- OpenAPI test for the required fields, enum and const.
+
+### Changed
+
+- `VERSION` is `0.2.0`; the contract hash is
+  `sha256:afca22a42f7163e0351d185d5a8577b0b51f2f3da4b92278f161a4a7d2c35b1c`.
+- Consumers pinned to `interfaces >=0.1,<0.2` or to the v0.1.0 hash must adopt
+  the v0.2.0 hash before their runtime handshake can pass.
 
 ## [0.1.0] — 2026-11-23
 

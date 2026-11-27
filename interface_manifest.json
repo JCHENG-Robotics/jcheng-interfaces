@@ -1,5 +1,5 @@
 {
-  "contract_hash": "sha256:0b8d72ced7f54d444d6851d8b99a51a78e2bed3f687324f51a15f76557f24b42",
+  "contract_hash": "sha256:afca22a42f7163e0351d185d5a8577b0b51f2f3da4b92278f161a4a7d2c35b1c",
   "files": {
     "ros2_ws/src/jcheng_interfaces/action/ExecuteMotion.action": "343d434d456b32c4a76e25f498b13663d74913903c4cf5f757ca3cd1df428be2",
     "ros2_ws/src/jcheng_interfaces/msg/BasePulse.msg": "9623e779bddb8281de7ed71b60b9029921ae71412c749731e2bd3ffa0bd929e1",
@@ -33,7 +33,7 @@
     "schemas/evidence-record.v1.schema.json": "5eae17da2ba2b95680a72a5027a332ecc7966be5d66b1dacb74b1de7356ab91d",
     "schemas/lockfile.v1.schema.json": "65ed01ae80619e68c08c4cb0f182bef834daa31ff2d5cfa6170549893b33c530",
     "schemas/messages.v1.schema.json": "6c3a6704785989ff0fd3076799254eada1026bf1128df1874ac94730c6cfa3d7",
-    "schemas/openapi/jcheng-gateway.v1.yaml": "2009e79f00cdcfa098cdaa4d812d1d977929ffb6ae75a59f968d4cad76e5e7d0",
+    "schemas/openapi/jcheng-gateway.v1.yaml": "26ab05831e83ed3a2151486353ef16f5479497f5cb5a1afae4d2fc345408de5f",
     "schemas/robot-profile.v1.schema.json": "084e178aeb4aa152b40d1970c668022521757210c7e260ed592cde01aede7ef2",
     "schemas/safety-profile.v1.schema.json": "5b1a2abdbd8c6af802f2faf316fc7282781d5dcc163a1cd9c8ff5baed0477249",
     "schemas/ws/jcheng-ws.v1.json": "705e86e5684f5a064894e840ffbae88523ffe365cc0bfa805573d24a54e640ba"
@@ -45,5 +45,5 @@
   "package": "jcheng_interfaces",
   "ros_type_hashes": {},
   "schema_version": 1,
-  "version": "0.1.0"
+  "version": "0.2.0"
 }
