@@ -1,9 +1,9 @@
 # Proposal — Offline Artifact Contract v1
 
-> Status: **Proposed** (2026-11-28). Not accepted, not contracted, not a
-> release. This proposal records the cross-repository semantics already used by
-> the merged Baseline 1 development work; it does not move a schema into
-> `jcheng-interfaces` and does not create a new runtime contract.
+> Status: **Accepted (2026-11-28)** for the offline artifact contract only.
+> This does not accept or stabilize any runtime/ROS interface. The proposal does
+> not move a schema into `jcheng-interfaces` and does not create a new runtime
+> contract.
 
 ## 1. Problem
 
@@ -171,16 +171,25 @@ are contract evidence, not device facts or scenario acceptance criteria.
 
 ## 8. Acceptance record
 
-This proposal is accepted only when:
+Accepted on 2026-11-28. Evidence:
 
-1. the interface owner records an approval on the PR;
-2. the golden-vector test passes in CI;
-3. the device/scenario/applications owners confirm the version and consumer
-   lists in this document;
-4. the approval is recorded in `docs/CONTRACT.md` or the repository changelog.
+| Condition | Evidence |
+|---|---|
+| Interface-owner approval | JerichoSwaine, review `APPROVED` on jcheng-interfaces PR #20, 2026-11-28T06:27:30Z |
+| Merge | PR #20 merged as `a142641b4fb256aa2368abe778bb6c5b010d1c23` |
+| Golden vectors | `tests/test_offline_artifact_contract.py` passes; 22 interfaces tests on the candidate |
+| Producer/consumer confirmation | devices PR #7 (`a006f5f`), applications PR #20 (`0be306e`) and `.github` PR #37 (`f9e77eb`) were approved by the same owner and merged |
+| Approval record | this section and `docs/CONTRACT.md` §4 |
 
-Until all four exist, the status remains **Proposed** and the vocabulary
-remains `local_draft`.
+Scope of acceptance:
+
+- accepted: the offline artifact semantics in this proposal, contract version
+  `1.0.0`;
+- not accepted: ROS IDL, DDS, HTTP/gateway schemas, runtime robot profiles or
+  any real hardware motion authority;
+- the capability vocabulary may now be recorded as `contracted` by the scenario
+  owner (jcheng-scenarios PR);
+- no schema relocation or runtime contract-hash change is implied.
 
 ## Related
 
