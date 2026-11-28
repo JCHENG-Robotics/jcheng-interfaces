@@ -1,0 +1,102 @@
+{
+  "contract": "jcheng.offline-artifact-contract.v1",
+  "contract_version": "1.0.0",
+  "hash_rule": "sha256 over canonical JSON (sorted keys, separators ',' ':', ensure_ascii) with content_hash removed",
+  "schema": "jcheng.offline_artifact_contract.golden.v1",
+  "semantics": {
+    "cell_roles": [
+      "arm",
+      "gripper",
+      "camera",
+      "base",
+      "sensor",
+      "teleop"
+    ],
+    "content_hash": "artifact self-hash, never the source hash",
+    "joint_limits": "degrees in profiles/snapshots; radians in runtime recipes",
+    "source_hash": "source declaration hash, never the artifact self-hash",
+    "threshold": "op/value/unit; missing fact is unverified"
+  },
+  "vectors": [
+    {
+      "artifact": "jcheng.device_snapshot.v1",
+      "document": {
+        "attributes": {
+          "category": "arm",
+          "control_modes": [
+            "position"
+          ],
+          "dof": 1,
+          "kinematics_declared": true,
+          "role": "arm"
+        },
+        "capabilities": [
+          {
+            "feedback": [],
+            "id": "arm.position_control",
+            "parameters": []
+          }
+        ],
+        "content_hash": "sha256:c75a41599d52944dcfd69070ca07a01d91372801ddaf7f9ddd012be0212cf57b",
+        "device_version": "0.1.0",
+        "generated_by": "golden 0.1.0",
+        "joints": [
+          {
+            "limits": {
+              "max_deg": 90.0,
+              "min_deg": -90.0
+            },
+            "name": "joint1",
+            "role": "shoulder"
+          }
+        ],
+        "notes": "golden vector",
+        "safety_overlay": {
+          "applied": false,
+          "content_hash": null,
+          "source": null,
+          "stricter_wins": true
+        },
+        "schema": "jcheng.device_snapshot.v1",
+        "source_device": "example.arm",
+        "source_hash": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "source_path": "registry/devices/example.arm.yaml"
+      },
+      "id": "minimal-device-snapshot"
+    },
+    {
+      "artifact": "jcheng.scenario_requirements.v1",
+      "document": {
+        "capabilities": [
+          {
+            "id": "manipulation.arm.dof",
+            "interface": "arm.position_control",
+            "required": true,
+            "requirement_id": "arm_dof",
+            "requirement_owner": "device",
+            "role": "arm",
+            "statement": "at least four joints",
+            "threshold": {
+              "op": ">=",
+              "unit": "joints",
+              "value": 4
+            },
+            "verification": "Unverified"
+          }
+        ],
+        "constraints": [],
+        "content_hash": "sha256:11ab9cdad0ce2f7b6a3e698ef07a78be7a116238be4ffec9b8f91e267bc5172b",
+        "evaluation_id": "golden.evaluation@0.1.0",
+        "provenance": {
+          "scenario_content_hash": "sha256:2222222222222222222222222222222222222222222222222222222222222222"
+        },
+        "scenario_id": "golden",
+        "scenario_version": "0.1.0",
+        "schema": "jcheng.scenario_requirements.v1",
+        "task_id": "golden.task@0.1.0",
+        "vocabulary_status": "local_draft"
+      },
+      "id": "minimal-scenario-requirements"
+    }
+  ]
+}

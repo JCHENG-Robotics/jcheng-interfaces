@@ -8,6 +8,11 @@ All notable changes to this project are documented here. Format based on
 
 ### Added
 
+- Proposal `docs/proposals/offline-artifact-contract-v1.md`: cross-repository
+  semantics for device snapshots, scenario requirements, cell composition,
+  capability-match results, hash rules and units. Status Proposed; vocabulary
+  remains `local_draft`. Golden vectors and their test are included. No IDL,
+  schema relocation or contract-hash change.
 - `scripts/humble_ci.sh`: local Humble build and contract-check wrapper in the
   `armpi-humble-moveit` image, mirroring the `m2-contract` CI job with a
   disposable workspace copy.
