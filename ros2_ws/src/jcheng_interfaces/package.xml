@@ -2,7 +2,7 @@
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
   <name>jcheng_interfaces</name>
-  <version>0.2.0</version>
+  <version>0.3.0</version>
   <description>JCHENG Robotics interface contracts: motion intents, leases, safety state and results.</description>
   <maintainer email="chengkewei77@gmail.com">JerichoCheng</maintainer>
   <license>Proprietary (license review pending; no LICENSE file)</license>
