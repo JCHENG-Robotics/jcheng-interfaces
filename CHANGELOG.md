@@ -8,6 +8,9 @@ All notable changes to this project are documented here. Format based on
 
 ### Added
 
+- **Accepted** `docs/proposals/offline-artifact-contract-v1.md` for the offline
+  artifact contract only (contract 1.0.0; PR #20 review approval, merge
+  `a142641`). No IDL/schema/runtime change.
 - Proposal `docs/proposals/offline-artifact-contract-v1.md`: cross-repository
   semantics for device snapshots, scenario requirements, cell composition,
   capability-match results, hash rules and units. Status Proposed; vocabulary

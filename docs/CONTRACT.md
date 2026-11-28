@@ -41,12 +41,13 @@
 - 操作者字段命名为 `operator_id`，避免 C++ 保留字 `operator`。
 - 错误码以新注册表为准，旧码保留映射。
 
-## 4. 离线工件契约（提议，未接受）
+## 4. 离线工件契约（已接受，2026-11-28）
 
 `jcheng-devices`、`jcheng-scenarios` 与 `jcheng-applications` 之间的
 `device_snapshot.v1` / `scenario_requirements.v1` 语义已由
 [`proposals/offline-artifact-contract-v1.md`](proposals/offline-artifact-contract-v1.md)
-提议，状态为 **Proposed**：
+已由 Interface Owner 于 2026-11-28 批准（PR #20 review APPROVED，
+merge `a142641`），状态为 **Accepted**，仅覆盖离线工件：
 
 - 工件 `content_hash` 是去掉自身字段后的 canonical JSON 自哈希；
 - 源声明哈希单独存放（设备 `source_hash`、场景 `provenance.scenario_content_hash`）；
@@ -54,7 +55,8 @@
 - 角色组合缺失必需角色 fail closed，缺失设备事实为 `unverified`；
 - `capability_satisfied` / `offline_execution_allowed` 不等于
   `deployment_ready` 或 `motion_authorized`；
-- 未获批准前，能力词汇仍为 `local_draft`，不得称为正式公共标准。
+- 能力词汇由 `jcheng-scenarios` 在批准后更新为 `contracted`；本批准不覆盖
+  ROS IDL、DDS、HTTP 或运行时机器人 profile。
 
 接受条件与 golden vectors 见提案与
 [`../tests/fixtures/offline_artifact_contract_v1.json`](../tests/fixtures/offline_artifact_contract_v1.json)。
