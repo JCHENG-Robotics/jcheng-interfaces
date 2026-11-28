@@ -6,6 +6,13 @@ All notable changes to this project are documented here. Format based on
 
 ## [Unreleased]
 
+### Changed
+
+- Default CI and local contract checks now use ROS 2 Jazzy
+  (`ros:jazzy-ros-base`, `ros-jazzy-*`). `scripts/humble_ci.sh` is replaced by
+  the native host script `scripts/jazzy_ci.sh`; the ArmPi vendor runtime
+  remains Humble and is not part of this repository.
+
 ### Added
 
 - **Accepted** `docs/proposals/offline-artifact-contract-v1.md` for the offline

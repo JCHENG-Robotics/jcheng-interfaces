@@ -26,7 +26,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     container:
-      image: ros:humble-ros-base@sha256:dfc94c85d8e01f230951b2a85ca5576e08473081c3da5fbbe8f3ab844703b9ba
+      # ros:jazzy-ros-base, multi-arch index digest (Docker Hub, 2026-11-28)
+      image: ros:jazzy-ros-base@sha256:5147d3ae250ce754afd399f6bfec15b33dd4e473ca357e30432a3182031bfad6
     env:
       DEBIAN_FRONTEND: noninteractive
       PYTHONUNBUFFERED: "1"
@@ -47,14 +48,14 @@ jobs:
             python3-pip \
             python3-setuptools \
             python3-yaml \
-            ros-humble-ament-cmake \
-            ros-humble-ament-lint-auto \
-            ros-humble-ament-lint-common \
-            ros-humble-builtin-interfaces \
-            ros-humble-geometry-msgs \
-            ros-humble-rosidl-default-generators \
-            ros-humble-rosidl-default-runtime \
-            ros-humble-std-msgs
+            ros-jazzy-ament-cmake \
+            ros-jazzy-ament-lint-auto \
+            ros-jazzy-ament-lint-common \
+            ros-jazzy-builtin-interfaces \
+            ros-jazzy-geometry-msgs \
+            ros-jazzy-rosidl-default-generators \
+            ros-jazzy-rosidl-default-runtime \
+            ros-jazzy-std-msgs
       - name: Install Python contract test tooling
         shell: bash
         run: |
@@ -64,7 +65,7 @@ jobs:
       - name: Build jcheng_interfaces
         shell: bash
         run: |
-          source /opt/ros/humble/setup.bash
+          source /opt/ros/jazzy/setup.bash
           colcon build \
             --base-paths ros2_ws/src \
             --packages-select jcheng_interfaces \
@@ -72,7 +73,7 @@ jobs:
       - name: Contract checks
         shell: bash
         run: |
-          source /opt/ros/humble/setup.bash
+          source /opt/ros/jazzy/setup.bash
           source install/setup.bash
           python3 tools/generate_manifest.py --check
           python3 tools/check_schemas.py
