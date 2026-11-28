@@ -1,6 +1,9 @@
 from __future__ import annotations
 
+from copy import deepcopy
 from pathlib import Path
+
+import pytest
 
 from jcheng_contracts.validate import check_schema, validate_instance, validate_message
 
@@ -54,3 +57,42 @@ def test_config_fixtures(root: Path, fixtures: Path) -> None:
     ]:
         schema = load_json(root / "schemas" / schema_name)
         validate_instance(load_json(fixtures / name), schema)
+
+
+def test_robot_profile_v2_fixtures(root: Path, fixtures: Path) -> None:
+    schema = load_json(root / "schemas" / "robot-profile.v2.schema.json")
+    for name in ("robot_profile_v2_piper.json", "robot_profile_v2_bus_servo.json"):
+        validate_instance(load_json(fixtures / name), schema)
+
+
+def test_robot_profile_v2_bus_fields_follow_kind(root: Path, fixtures: Path) -> None:
+    schema = load_json(root / "schemas" / "robot-profile.v2.schema.json")
+    piper = load_json(fixtures / "robot_profile_v2_piper.json")
+    bus = load_json(fixtures / "robot_profile_v2_bus_servo.json")
+
+    wrong = deepcopy(piper)
+    wrong["joints"][0]["servo_id"] = 1
+    with pytest.raises(ValueError, match="servo_id"):
+        validate_instance(wrong, schema)
+
+    wrong = deepcopy(bus)
+    wrong["joints"][0]["index"] = 1
+    with pytest.raises(ValueError, match="index"):
+        validate_instance(wrong, schema)
+
+
+def test_robot_profile_v2_requires_chains_and_typed_gripper(
+    root: Path, fixtures: Path
+) -> None:
+    schema = load_json(root / "schemas" / "robot-profile.v2.schema.json")
+    piper = load_json(fixtures / "robot_profile_v2_piper.json")
+
+    wrong = deepcopy(piper)
+    del wrong["chains"]
+    with pytest.raises(ValueError, match="chains"):
+        validate_instance(wrong, schema)
+
+    wrong = deepcopy(piper)
+    wrong["gripper"]["unit"] = "rad"
+    with pytest.raises(ValueError):
+        validate_instance(wrong, schema)

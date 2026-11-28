@@ -1,0 +1,61 @@
+{
+  "schema_version": 2,
+  "kind": "can_arm",
+  "robot": "piper_x",
+  "profile_version": "0.1.0-draft",
+  "baseline_ref": {
+    "repo": "agilexrobotics/agx_arm_urdf",
+    "commit": "680fa925cd00db7e2628563d2edc5540963045de"
+  },
+  "chains": [
+    {
+      "id": "arm",
+      "role": "single",
+      "base_link": "base_link",
+      "tip_link": "tcp_link",
+      "moveit_group": "arm",
+      "workspace": {
+        "lower": [-0.6, -0.6, -0.1],
+        "upper": [0.6, 0.6, 0.8]
+      }
+    }
+  ],
+  "joints": [
+    {"name": "joint1", "chain": "arm", "index": 1, "lower_rad": -2.6179938, "upper_rad": 2.6179938, "max_velocity_rad_s": 1.5, "max_acceleration_rad_s2": 1.0},
+    {"name": "joint2", "chain": "arm", "index": 2, "lower_rad": 0.0, "upper_rad": 3.1415926, "max_velocity_rad_s": 1.5, "max_acceleration_rad_s2": 1.0},
+    {"name": "joint3", "chain": "arm", "index": 3, "lower_rad": -2.9670597, "upper_rad": 0.0, "max_velocity_rad_s": 1.5, "max_acceleration_rad_s2": 1.0},
+    {"name": "joint4", "chain": "arm", "index": 4, "lower_rad": -1.553343, "upper_rad": 1.553343, "max_velocity_rad_s": 1.5, "max_acceleration_rad_s2": 1.0},
+    {"name": "joint5", "chain": "arm", "index": 5, "lower_rad": -1.553343, "upper_rad": 1.553343, "max_velocity_rad_s": 1.5, "max_acceleration_rad_s2": 1.0},
+    {"name": "joint6", "chain": "arm", "index": 6, "lower_rad": -2.88, "upper_rad": 2.88, "max_velocity_rad_s": 1.5, "max_acceleration_rad_s2": 1.0}
+  ],
+  "gripper": {
+    "type": "parallel_prismatic",
+    "master_joint": "gripper",
+    "unit": "m",
+    "lower": 0.0,
+    "upper": 0.1,
+    "closed": 0.0,
+    "open": 0.1,
+    "max_velocity": 0.05,
+    "mimic_joints": [
+      {"name": "gripper_joint1", "multiplier": 0.5, "offset": 0.0},
+      {"name": "gripper_joint2", "multiplier": -0.5, "offset": 0.0}
+    ]
+  },
+  "table_plane": {
+    "normal": [0.0, 0.0, 1.0],
+    "offset": 0.0,
+    "clearance_m": 0.01
+  },
+  "profiles": {
+    "moveit": {"max_velocity_rad_s": 1.5, "max_acceleration_rad_s2": 1.0},
+    "step": {"max_step_rad": 0.35, "min_duration_s": 0.5, "max_duration_s": 10.0},
+    "pose": {"max_velocity_rad_s": 0.5},
+    "fast": {"max_velocity_rad_s": 2.0, "max_acceleration_rad_s2": 5.0, "requires_measured_verification": true},
+    "gripper": {"max_velocity": 0.05, "verify_measured": true}
+  },
+  "source_hashes": {
+    "urdf": "sha256:93eb2a84d01df81566a3c1ed275626d93a1c4275564a30c7899a35a672e265bb",
+    "gripper_xacro": "sha256:88561fe45a3f4e639c7a233b13574d88d7707b545110cb30b983e360cdb57420"
+  }
+}
