@@ -96,3 +96,35 @@ def test_robot_profile_v2_requires_chains_and_typed_gripper(
     wrong["gripper"]["unit"] = "rad"
     with pytest.raises(ValueError):
         validate_instance(wrong, schema)
+
+
+def test_chain_and_gripper_unit_fields(root: Path, fixtures: Path) -> None:
+    command = load_json(fixtures / "motion_command.json")
+    command["chain_id"] = "left"
+    command["kind"] = "GRIPPER"
+    command["gripper"] = {
+        "position_rad": 0.05,
+        "unit": "m",
+        "max_velocity_rad_s": 0.05,
+        "duration_s": 1.0,
+        "verify_bus": True,
+    }
+    validate_message("MotionCommand", command, root)
+
+    # The old 2.22 upper bound is gone; the profile decides the bounds.
+    wide = deepcopy(command)
+    wide["gripper"]["position_rad"] = 3.0
+    validate_message("MotionCommand", wide, root)
+
+    bad = deepcopy(command)
+    bad["gripper"]["unit"] = "cm"
+    with pytest.raises(ValueError):
+        validate_message("MotionCommand", bad, root)
+
+    lease = load_json(fixtures / "control_lease.json")
+    lease["chain_id"] = "right"
+    validate_message("ControlLease", lease, root)
+
+    state = load_json(fixtures / "robot_state.json")
+    state["chain_ids"] = ["arm"] * len(state["joint_names"])
+    validate_message("RobotState", state, root)

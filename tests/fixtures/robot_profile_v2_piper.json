@@ -13,11 +13,7 @@
       "role": "single",
       "base_link": "base_link",
       "tip_link": "tcp_link",
-      "moveit_group": "arm",
-      "workspace": {
-        "lower": [-0.6, -0.6, -0.1],
-        "upper": [0.6, 0.6, 0.8]
-      }
+      "moveit_group": "arm"
     }
   ],
   "joints": [

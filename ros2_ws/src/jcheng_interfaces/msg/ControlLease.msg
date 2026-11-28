@@ -5,6 +5,9 @@ string holder
 # arm | gripper | base | full
 string scope
 
+# Empty applies to every chain in scope; otherwise one profile chains[].id.
+string chain_id
+
 # exclusive
 string mode
 

@@ -30,7 +30,7 @@
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["id", "base_link", "tip_link", "workspace"],
+        "required": ["id", "base_link", "tip_link"],
         "properties": {
           "id": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$"},
           "role": {"enum": ["single", "left", "right"]},
@@ -40,6 +40,7 @@
           "workspace": {
             "type": "object",
             "additionalProperties": false,
+            "description": "Optional. When absent, pose and workspace checks fail closed.",
             "required": ["lower", "upper"],
             "properties": {
               "frame": {"type": "string", "minLength": 1, "description": "Defaults to the chain base_link."},
@@ -53,7 +54,7 @@
     "joints": {
       "type": "array",
       "minItems": 1,
-      "description": "Actuated arm joints. A gripper's master joint is described by the gripper object and is not listed here.",
+      "description": "Actuated arm joints. Names must be unique across chains; a dual-arm profile namespaces them. A gripper's master joint is described by the gripper object and is not listed here.",
       "items": {
         "type": "object",
         "additionalProperties": false,

@@ -5,6 +5,8 @@ string source
 bool fresh
 
 string[] joint_names
+# Parallel to joint_names. Empty means the default chain.
+string[] chain_ids
 float64[] positions
 float64[] velocities
 float64 gripper_position
