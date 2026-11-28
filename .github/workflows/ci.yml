@@ -59,7 +59,7 @@ jobs:
       - name: Install Python contract test tooling
         shell: bash
         run: |
-          python3 -m pip install --no-cache-dir \
+          python3 -m pip install --no-cache-dir --break-system-packages \
             'jsonschema==4.23.0' \
             'pytest==8.3.4'
       - name: Build jcheng_interfaces
