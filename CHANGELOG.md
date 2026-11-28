@@ -26,6 +26,29 @@ All notable changes to this project are documented here. Format based on
   joint-limit contract for a simulation-only arm. No schema or contract-hash
   change.
 
+## [0.3.0] — 2026-11-28
+
+Additive multi-chain and gripper-unit contract release for the fixed-cell
+pivot. `interface_manifest.json` is `sha256:8bc92d18…`; the VERSION bump is
+required because the IDL and schemas changed.
+
+### Added
+
+- `robot-profile.v2.schema.json`: bus-agnostic n-DoF profiles with per-chain
+  workspace/tip, `kind` (`bus_servo` / `can_arm`), an optional base chain and a
+  typed gripper.
+- `MotionCommand.chain_id`, `TeleopCommand.chain_id` and `ControlLease.chain_id`
+  (empty = default chain) so one arm of a dual-arm cell can be addressed and
+  leased independently.
+- `RobotState.chain_ids` parallel to `joint_names`.
+- `GripperCommand.unit` (`rad` / `m`, empty = profile) with profile-driven
+  bounds; the 2.22 rad upper bound is removed from the contract.
+
+### Changed
+
+- `robot-profile.v2` makes `chains[].workspace` optional so an unmeasured cell
+  fails closed instead of inventing bounds.
+
 ## [0.2.0] — 2026-11-27
 
 Additive stop-confirmation contract release; no IDL or ROS message change.
