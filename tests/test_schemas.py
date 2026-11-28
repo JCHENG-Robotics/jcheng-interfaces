@@ -1,6 +1,9 @@
 from __future__ import annotations
 
+from copy import deepcopy
 from pathlib import Path
+
+import pytest
 
 from jcheng_contracts.validate import check_schema, validate_instance, validate_message
 
@@ -54,3 +57,74 @@ def test_config_fixtures(root: Path, fixtures: Path) -> None:
     ]:
         schema = load_json(root / "schemas" / schema_name)
         validate_instance(load_json(fixtures / name), schema)
+
+
+def test_robot_profile_v2_fixtures(root: Path, fixtures: Path) -> None:
+    schema = load_json(root / "schemas" / "robot-profile.v2.schema.json")
+    for name in ("robot_profile_v2_piper.json", "robot_profile_v2_bus_servo.json"):
+        validate_instance(load_json(fixtures / name), schema)
+
+
+def test_robot_profile_v2_bus_fields_follow_kind(root: Path, fixtures: Path) -> None:
+    schema = load_json(root / "schemas" / "robot-profile.v2.schema.json")
+    piper = load_json(fixtures / "robot_profile_v2_piper.json")
+    bus = load_json(fixtures / "robot_profile_v2_bus_servo.json")
+
+    wrong = deepcopy(piper)
+    wrong["joints"][0]["servo_id"] = 1
+    with pytest.raises(ValueError, match="servo_id"):
+        validate_instance(wrong, schema)
+
+    wrong = deepcopy(bus)
+    wrong["joints"][0]["index"] = 1
+    with pytest.raises(ValueError, match="index"):
+        validate_instance(wrong, schema)
+
+
+def test_robot_profile_v2_requires_chains_and_typed_gripper(
+    root: Path, fixtures: Path
+) -> None:
+    schema = load_json(root / "schemas" / "robot-profile.v2.schema.json")
+    piper = load_json(fixtures / "robot_profile_v2_piper.json")
+
+    wrong = deepcopy(piper)
+    del wrong["chains"]
+    with pytest.raises(ValueError, match="chains"):
+        validate_instance(wrong, schema)
+
+    wrong = deepcopy(piper)
+    wrong["gripper"]["unit"] = "rad"
+    with pytest.raises(ValueError):
+        validate_instance(wrong, schema)
+
+
+def test_chain_and_gripper_unit_fields(root: Path, fixtures: Path) -> None:
+    command = load_json(fixtures / "motion_command.json")
+    command["chain_id"] = "left"
+    command["kind"] = "GRIPPER"
+    command["gripper"] = {
+        "position_rad": 0.05,
+        "unit": "m",
+        "max_velocity_rad_s": 0.05,
+        "duration_s": 1.0,
+        "verify_bus": True,
+    }
+    validate_message("MotionCommand", command, root)
+
+    # The old 2.22 upper bound is gone; the profile decides the bounds.
+    wide = deepcopy(command)
+    wide["gripper"]["position_rad"] = 3.0
+    validate_message("MotionCommand", wide, root)
+
+    bad = deepcopy(command)
+    bad["gripper"]["unit"] = "cm"
+    with pytest.raises(ValueError):
+        validate_message("MotionCommand", bad, root)
+
+    lease = load_json(fixtures / "control_lease.json")
+    lease["chain_id"] = "right"
+    validate_message("ControlLease", lease, root)
+
+    state = load_json(fixtures / "robot_state.json")
+    state["chain_ids"] = ["arm"] * len(state["joint_names"])
+    validate_message("RobotState", state, root)

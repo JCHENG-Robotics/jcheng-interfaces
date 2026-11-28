@@ -12,6 +12,9 @@ string kind
 # moveit | step | pose | fast | base | gripper
 string profile
 
+# Empty selects the default chain; otherwise one robot profile chains[].id.
+string chain_id
+
 ContractVersion contract
 
 # kind=JOINT_TRAJECTORY

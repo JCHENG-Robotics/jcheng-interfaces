@@ -4,6 +4,10 @@ std_msgs/Header header
 uint64 seq
 string lease_id
 string source
+
+# Empty selects the default chain; otherwise one robot profile chains[].id.
+string chain_id
+
 ContractVersion contract
 
 # JOINT_VELOCITY | CARTESIAN_VELOCITY
